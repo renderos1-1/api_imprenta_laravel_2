@@ -14,7 +14,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function show(): View
     {
         return view('auth.login');
     }
@@ -24,11 +24,29 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        // Validate the DUI format
+        $request->validate([
+            'dui' => ['required', 'string', 'regex:/^[0-9]{8}-[0-9]$/'],
+            'password' => ['required', 'string'],
+        ]);
 
-        $request->session()->regenerate();
+        $credentials = [
+            'dui' => $request->input('dui'),
+            'password' => $request->input('password'),
+        ];
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+
+            // Update last_login timestamp
+            Auth::user()->update(['last_login' => now()]);
+
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }
+
+        return back()->withErrors([
+            'dui' => trans('auth.failed'),
+        ])->onlyInput('dui');
     }
 
     /**
