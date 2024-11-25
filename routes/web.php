@@ -8,6 +8,14 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/dash', function () {
+    return view('dash');
+});
+
+Route::get('/estadisticas', function () {
+    return view('estadisticas');
+});
+
 // Protected routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {

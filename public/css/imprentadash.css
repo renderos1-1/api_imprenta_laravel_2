@@ -1,0 +1,69 @@
+/* Reset básico */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    width: 100%;
+}
+
+
+.sidebar {
+    width: 222px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 5px 0 10px -5px #2a4d69;
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+    margin-top: 0.5px;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    margin-top: 0;
+    color: #003366;
+}
+
+.sidebar a {
+    display: block;
+    color: #333;
+    text-decoration: none;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.sidebar a:hover {
+    background-color: #ddd;
+    color: #003366;
+}
+
+.body_principal{
+    background-color: white;
+}
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Fuerza exactamente 3 columnas */
+    gap: 20px;
+    position: absolute;
+    left: 300px;
+    padding-top: 300px;
+}
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 60px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.graficos{
+    position: absolute;
+    left: 735px;
+    padding-top: 200px;
+    font-size: 30px;
+}
