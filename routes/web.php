@@ -16,6 +16,10 @@ Route::get('/estadisticas', function () {
     return view('estadisticas');
 });
 
+Route::get('/adminuser', function () {
+    return view('adminuser');
+});
+
 // Protected routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
