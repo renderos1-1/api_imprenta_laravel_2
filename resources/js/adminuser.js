@@ -163,6 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Función de búsqueda
+    // fifi
     const searchInput = document.querySelector('.search-bar');
     searchInput.addEventListener('input', function () {
         const filter = searchInput.value.toLowerCase(); // Convertir el texto a minúsculas
