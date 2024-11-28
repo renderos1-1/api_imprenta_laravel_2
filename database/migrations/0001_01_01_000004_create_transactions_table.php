@@ -3,12 +3,17 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
     public function up()
     {
-        // First create the ENUM types in PostgreSQL
+        // First drop existing ENUM types if they exist
+        DB::statement('DROP TYPE IF EXISTS document_type CASCADE');
+        DB::statement('DROP TYPE IF EXISTS person_type CASCADE');
+
+        // Then create the ENUM types in PostgreSQL
         DB::statement("CREATE TYPE document_type AS ENUM ('dui', 'passport', 'nit')");
         DB::statement("CREATE TYPE person_type AS ENUM ('natural', 'juridica')");
 
@@ -53,7 +58,7 @@ return new class extends Migration
         Schema::dropIfExists('transactions');
 
         // Drop the ENUM types
-        DB::statement('DROP TYPE IF EXISTS document_type');
-        DB::statement('DROP TYPE IF EXISTS person_type');
+        DB::statement('DROP TYPE IF EXISTS document_type CASCADE');
+        DB::statement('DROP TYPE IF EXISTS person_type CASCADE');
     }
 };
