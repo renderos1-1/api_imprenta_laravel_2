@@ -67,3 +67,35 @@ body {
     padding-top: 200px;
     font-size: 30px;
 }
+/*herd*/
+/* Submenú */
+.submenu {
+    position: relative;
+}
+
+.submenu .submenu-content {
+    display: block; /* Permitir la animación */
+    max-height: 0; /* Oculta el contenido inicialmente */
+    overflow: hidden; /* Esconde el contenido excedente */
+    transition: max-height 0.5s ease-out; /* Transición suave */
+    margin-left: 20px; /* Indenta las opciones del submenú */
+    flex-direction: column;
+}
+
+.submenu .submenu-content a {
+    display: block;
+    padding: 5px 10px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.submenu .submenu-content a:hover {
+    background-color: #ddd;
+    color: #003366;
+}
+
+/* Mostrar el submenú con animación */
+.submenu:hover .submenu-content {
+    max-height: 500px; /* Ajusta este valor según el tamaño del contenido */
+}
