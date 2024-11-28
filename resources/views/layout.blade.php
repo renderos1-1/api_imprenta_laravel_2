@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="{{asset('css/adminuser.css')}}">
     @vite(['resources/js/app.js'])
     <title>@yield('Title', 'imprentadashboard')</title>
+    @stack('styles')
 </head>
 <body class="body_principal">
 @include('header')
 @yield('content')
-
+@stack('scripts')
 </body>
 </html>
