@@ -6,8 +6,16 @@
 </div>
 <div class="sidebar">
     <h2>Menú</h2>
-    <a href="pagina_inicio.html">Inicio</a>
-    <a href="graficos.html">Gráficos</a>
-    <a href="transacciones.html">Transacciones</a>
-    <a href="estadisticas.html">Estadísticas</a>
+    <a href="{{ route('dash') }}">Inicio</a>
+    <a href="{{ route('graficos') }}">Gráficos</a>
+    <a href="{{ route('transacciones') }}">Transacciones</a>
+    <a href="{{ route('estadisticas') }}">Estadísticas</a>
+
+    <!-- Configuración con submenú -->
+    <div class="submenu">
+        <a href="#" class="submenu-toggle">Configuraciones</a>
+        <div class="submenu-content">
+            <a href="{{ route('adminuser') }}">Administración de Usuarios</a>
+        </div>
+    </div>
 </div>

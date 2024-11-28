@@ -33,6 +33,14 @@ Route::middleware(['auth'])->group(function () {
         return view('adminuser');
     })->name('adminuser');
 
+    Route::get('/graficos', function () {
+        return view('graficos');
+    })->name('graficos');
+
+    Route::get('/transacciones', function () {
+        return view('transacciones');
+    })->name('transacciones');
+
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
