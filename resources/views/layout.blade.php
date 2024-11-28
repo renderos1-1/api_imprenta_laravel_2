@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{asset('css/imprentadash.css')}}">
     <link rel="stylesheet" href="{{asset('css/estilo.css')}}">
     <link rel="stylesheet" href="{{asset('css/adminuser.css')}}">
+    <link rel="stylesheet" href="{{asset('css/userlog.css')}}">
     @vite(['resources/js/app.js'])
     <title>@yield('Title', 'imprentadashboard')</title>
 </head>
