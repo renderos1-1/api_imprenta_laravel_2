@@ -1,28 +1,6 @@
 @extends('layout')
 @section('title','Administrador de usuarios')
 @section('content')
-    <div class="content">
-        <header>
-            <img src="Puro_money/img/Logo_Gobierno.png" alt="logo">
-            <h1>Administración de usuarios</h1>
-        </header>
-    </div>
-
-    <div class="sidebar">
-        <h2>Menú</h2>
-        <a href="pagina_inicio.html">Inicio</a>
-        <a href="graficos.html">Gráficos</a>
-        <a href="transacciones.html">Transacciones</a>
-        <a href="estadisticas.html">Estadísticas</a>
-
-        <!-- Configuración con submenú -->
-        <div class="submenu">
-            <a href="#" class="submenu-toggle">Configuraciones</a>
-            <div class="submenu-content">
-                <a href="administracion_usuarios.html">Administración de Usuarios</a>
-            </div>
-        </div>
-    </div>
 
     <main class="main-content">
         <div class="user-management">
