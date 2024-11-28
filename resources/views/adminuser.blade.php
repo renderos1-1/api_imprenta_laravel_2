@@ -1,7 +1,6 @@
 @extends('layout')
 @section('title','Administrador de usuarios')
 @section('content')
-
     <main class="main-content">
         <div class="user-management">
             <div class="actions-bar">
@@ -13,7 +12,7 @@
                 <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>Email</th>
+                    <th>DUI</th>
                     <th>Rol</th>
                     <th>Estado</th>
                     <th>Acciones</th>
@@ -21,8 +20,8 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>Admin User</td>
-                    <td>admin@example.com</td>
+                    <td>Admin Ejemplo</td>
+                    <td>00000000-0</td>
                     <td>Administrador</td>
                     <td>Activo</td>
                     <td>
@@ -31,8 +30,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Editor User</td>
-                    <td>editor@example.com</td>
+                    <td>Editor Ejemplo</td>
+                    <td>00000000-0</td>
                     <td>Editor</td>
                     <td>Activo</td>
                     <td>
@@ -45,6 +44,7 @@
         </div>
     </main>
 
+    <!-- SweetAlert2 CDN -->
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
