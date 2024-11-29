@@ -18,4 +18,5 @@
         <div class="grid-item">Item 5</div>
         <div class="grid-item">ouyet2fiuyfqerouyfgpiur2gfogroifgyoiuqgfourufubrduroquryfouby1ofuy</div>
     </div>
+    <a href="{{ route('estadisticas2') }}" class="btn-next">Siguiente</a>
 @endsection

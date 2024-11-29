@@ -26,24 +26,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dash', [DashboardController::class, 'indexpiechart'])->name('dash');
 
     Route::get('/estadisticas', function () {
-        return view('estadisticas');
+        return view('estadisticas', ['headerWord' => 'Estadísticas']);
     })->name('estadisticas');
 
 
     Route::get('/estadisticas2', function () {
-        return view('estadisticas2');
+        return view('estadisticas2', ['headerWord' => 'Estadísticas 2']);
     })->name('estadisticas2');
 
     Route::get('/adminuser', function () {
-        return view('adminuser');
+        return view('adminuser', ['headerWord' => 'Administración de Usuarios']);
     })->name('adminuser');
 
     Route::get('/graficos', function () {
-        return view('graficos');
+        return view('graficos', ['headerWord' => 'Gráficos']);
     })->name('graficos');
 
     Route::get('/transacciones', function () {
-        return view('transacciones');
+        return view('transacciones', ['headerWord' => 'Transacciones']);
     })->name('transacciones');
 
     // Profile routes
