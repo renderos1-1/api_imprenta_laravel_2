@@ -29,4 +29,26 @@ class DashboardController extends Controller
 
         return view('dash', compact('chartData'));
     }
+
+    public function indexpiechart(): View
+    {
+        // Existing transaction per day data
+        $transactionsPerDay = $this->transactionRepository->getTransactionsPerDay();
+        $chartData = [
+            'labels' => $transactionsPerDay->pluck('date')->toArray(),
+            'values' => $transactionsPerDay->pluck('total')->toArray(),
+        ];
+
+        // New person type distribution data
+        $personTypeData = $this->transactionRepository->getPersonTypeDistribution();
+        $pieChartData = [
+            'labels' => $personTypeData->pluck('person_type')->map(function($type) {
+                return $type === 'persona_natural' ? 'natural' : 'juridica';
+            })->toArray(),
+            'values' => $personTypeData->pluck('total')->toArray(),
+            'percentages' => $personTypeData->pluck('percentage')->toArray(),
+        ];
+
+        return view('dash', compact('chartData', 'pieChartData'));
+    }
 }
