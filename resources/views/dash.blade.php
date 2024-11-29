@@ -17,10 +17,10 @@
     </div>
 
     <div class="graficos">
-        <h2>Gráficos</h2>
-        <div class="chart-container">
-            <canvas id="transactionsChart"></canvas>
-        </div>
+
+    </div>
+    <div class="chart-container">
+        <canvas id="transactionsChart"></canvas>
     </div>
 @endsection
 
