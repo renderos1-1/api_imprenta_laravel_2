@@ -118,3 +118,7 @@ body {
 .submenu:hover .submenu-content {
     max-height: 500px; /* Ajusta este valor según el tamaño del contenido */
 }
+
+.grid-item {
+    background-image: url("");
+}
