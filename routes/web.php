@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,10 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard routes
     Route::get('/dash', [DashboardController::class, 'index'])->name('dash');
 
+    // User management routes
+    Route::get('/adminuser', [UserController::class, 'index'])->name('adminuser');
+    Route::resource('users', UserController::class)->except(['index']);
+
     Route::get('/estadisticas', function () {
         return view('estadisticas');
     })->name('estadisticas');
@@ -31,10 +36,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/estadisticas2', function () {
         return view('estadisticas2');
     })->name('estadisticas2');
-
-    Route::get('/adminuser', function () {
-        return view('adminuser');
-    })->name('adminuser');
 
     Route::get('/graficos', function () {
         return view('graficos');
