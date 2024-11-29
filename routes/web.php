@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,27 +24,25 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     // Dashboard routes
     Route::get('/dash', [DashboardController::class, 'index'])->name('dash');
-    Route::get('/dash', [DashboardController::class, 'indexpiechart'])->name('dash');
+
+    // User management routes
+    Route::get('/adminuser', [UserController::class, 'index'])->name('adminuser');
+    Route::resource('users', UserController::class)->except(['index']);
 
     Route::get('/estadisticas', function () {
-        return view('estadisticas', ['headerWord' => 'Estadísticas']);
+        return view('estadisticas');
     })->name('estadisticas');
 
-
     Route::get('/estadisticas2', function () {
-        return view('estadisticas2', ['headerWord' => 'Estadísticas 2']);
+        return view('estadisticas2');
     })->name('estadisticas2');
 
-    Route::get('/adminuser', function () {
-        return view('adminuser', ['headerWord' => 'Administración de Usuarios']);
-    })->name('adminuser');
-
     Route::get('/graficos', function () {
-        return view('graficos', ['headerWord' => 'Gráficos']);
+        return view('graficos');
     })->name('graficos');
 
     Route::get('/transacciones', function () {
-        return view('transacciones', ['headerWord' => 'Transacciones']);
+        return view('transacciones');
     })->name('transacciones');
 
     // Profile routes

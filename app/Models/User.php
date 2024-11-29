@@ -71,6 +71,13 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the role associated with the user.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+    /**
      * Custom validation rules for DUI
      */
     public static function rules()
