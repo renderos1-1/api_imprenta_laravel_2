@@ -80,7 +80,7 @@ class TransactionSeeder extends Seeder
             $startDate = Carbon::now()->subDays(rand(1, 30));
             $endDate = Carbon::parse($startDate)->addHours(rand(1, 48));
 
-            // Get random department and municipality
+            // Get random department and municipalityo
             $deptKey = array_rand($this->departamentos);
             $muniKey = array_rand($this->departamentos[$deptKey]['municipalities']);
 
