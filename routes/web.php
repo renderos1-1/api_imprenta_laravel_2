@@ -23,10 +23,12 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     // Dashboard routes
     Route::get('/dash', [DashboardController::class, 'index'])->name('dash');
+    Route::get('/dash', [DashboardController::class, 'indexpiechart'])->name('dash');
 
     Route::get('/estadisticas', function () {
         return view('estadisticas');
     })->name('estadisticas');
+
 
     Route::get('/estadisticas2', function () {
         return view('estadisticas2');

@@ -19,4 +19,15 @@ class TransactionRepository
             ->orderBy('date')
             ->get();
     }
+
+    public function getPersonTypeDistribution()
+    {
+        return Transaction::select(
+            'person_type',
+            DB::raw('COUNT(*) as total'),
+            DB::raw('ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM transactions), 2) as percentage')
+        )
+            ->groupBy('person_type')
+            ->get();
+    }
 }
