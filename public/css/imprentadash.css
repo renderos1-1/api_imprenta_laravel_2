@@ -16,7 +16,6 @@ body {
     background-color: white;
     padding: 20px;
     box-shadow: 5px 0 10px -5px #2a4d69;
-    position: relative;
     z-index: 1;
     height: 100vh;
     margin-top: 0.5px;

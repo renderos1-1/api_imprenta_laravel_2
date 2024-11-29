@@ -1,22 +1,19 @@
 @extends('layout')
 @section('title','Estadísticas')
 @section('content')
-    <div class="dashboard">
-        <div class="card">
-            <h3>Puta </h3>
-            <p>1,234</p>
-        </div>
-        <div class="card">
-            <h3>Loco de Hoy</h3>
-            <p>56799</p>
-        </div>
-        <div class="card">
-            <h3>Pasame un faso</h3>
-            <p>246,830,407</p>
-        </div>
-    </div>
-
-    <div class="graficos">
-        <h2>Gráficos</h2>
+    <div class="grid-container">
+        <!-- Cada div representa un "item" dentro de la cuadrícula -->
+        <div class="grid-item">Item 1</div>
+        <div class="grid-item">Item 2</div>
+        <div class="grid-item">Item 3</div>
+        <div class="grid-item">Item 4</div>
+        <div class="grid-item">Item 5</div>
+        <div class="grid-item">Item 6</div>
+        <div class="grid-item">Item 7</div>
+        <div class="grid-item">Item 8</div>
+        <div class="grid-item">Item 9</div>
+        <div class="grid-item">Item 10</div>
+        <div class="grid-item">Item 11</div>
+        <div class="grid-item">Item 12</div>
     </div>
 @endsection
