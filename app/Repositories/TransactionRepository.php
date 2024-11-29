@@ -28,6 +28,11 @@ class TransactionRepository
             DB::raw('ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM transactions), 2) as percentage')
         )
             ->groupBy('person_type')
-            ->get();
+            ->get()
+            ->map(function ($item) {
+                // Match the actual values in the database
+                $item->display_name = $item->person_type === 'natural' ? 'Natural' : 'Jurídica';
+                return $item;
+            });
     }
 }

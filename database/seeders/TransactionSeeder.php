@@ -76,7 +76,7 @@ class TransactionSeeder extends Seeder
         $statuses = ['completado', 'en_proceso', 'cancelado'];
 
         // Create 50 dummy transactions
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 75; $i++) {
             $startDate = Carbon::now()->subDays(rand(1, 30));
             $endDate = Carbon::parse($startDate)->addHours(rand(1, 48));
 
