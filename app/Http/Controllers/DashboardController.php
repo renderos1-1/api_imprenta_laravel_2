@@ -39,7 +39,7 @@ class DashboardController extends Controller
             'values' => $transactionsPerDay->pluck('total')->toArray(),
         ];
 
-        // Modified person type distribution datajkk
+        // Modified person type distribution datajkkk
         $personTypeData = $this->transactionRepository->getPersonTypeDistribution();
         $pieChartData = [
             'labels' => $personTypeData->pluck('display_name')->toArray(),
