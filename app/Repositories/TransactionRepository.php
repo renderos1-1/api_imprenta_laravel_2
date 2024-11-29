@@ -30,7 +30,7 @@ class TransactionRepository
             ->groupBy('person_type')
             ->get()
             ->map(function ($item) {
-                // Match the actual values in the databases
+                // Match the actual values in the databasess
                 $item->display_name = $item->person_type === 'natural' ? 'Natural' : 'Jurídica';
                 return $item;
             });
