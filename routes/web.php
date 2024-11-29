@@ -28,6 +28,10 @@ Route::middleware(['auth'])->group(function () {
         return view('estadisticas');
     })->name('estadisticas');
 
+    Route::get('/estadisticas2', function () {
+        return view('estadisticas2');
+    })->name('estadisticas2');
+
     Route::get('/adminuser', function () {
         return view('adminuser');
     })->name('adminuser');
