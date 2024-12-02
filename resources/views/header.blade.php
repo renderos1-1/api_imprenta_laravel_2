@@ -4,7 +4,7 @@
         <h1>{{ $headerWord ?? 'Pagina Principal' }}</h1>
     </header>
 </div>
-<div class="sidebar">
+<aside class="sidebar">
     <h2>Menú</h2>
     <a href="{{ route('dash') }}">Inicio</a>
     <a href="{{ route('transacciones') }}">Transacciones</a>
@@ -17,4 +17,4 @@
             <a href="{{ route('adminuser') }}">Administración de Usuarios</a>
         </div>
     </div>
-</div>
+</aside>
