@@ -11,14 +11,86 @@ body {
 }
 
 
+.body_principal{
+    background-color: white;
+}
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 50px;
+    max-width: 1100px;
+    margin-left: 300px;
+    margin-bottom: 0px;
+    border: 1px solid #ddd;
+    text-align: center;
+    gap: 40px;
+}
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+
+}
+
+.graficos {
+    margin-top: 0px;
+
+}
+
+.graficos h2 {
+    margin-bottom: 20px;
+
+}
+
+.chart-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 400px; /* Fixed height for the chart */
+    margin-top: 20px;
+    max-width: 1100px;
+    margin-left: 300px;
+
+
+}
+
+/*herd*/
+/* Submenú */
+
+
+.grid-item {
+    background-image: url("");
+}
+
+.chartoso {
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 20px;
+    max-width: 1100px;
+    margin-left: 300px;
+    margin-bottom: 50px;
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+.text {
+    margin-bottom: 40px;
+}
+
 .sidebar {
     width: 222px;
     background-color: white;
     padding: 20px;
     box-shadow: 5px 0 10px -5px #2a4d69;
     z-index: 1;
-    height: 100vh;
-    margin-top: 0.5px;
+    height: auto; /* Cambiar de 100vh a auto */
+    margin-top: 128px;
+    position: absolute;
+    min-height: 100vh; /* Asegura que al menos sea del tamaño de la ventana */
 }
 
 .sidebar h2 {
@@ -41,63 +113,16 @@ body {
     color: #003366;
 }
 
-.body_principal{
-    background-color: white;
-}
-.dashboard {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    margin-top: -800px;
-    max-width: 1100px;
-    margin-left: 300px;
-    margin-bottom: 750px;
-    border: 1px solid #ddd;
-    text-align: center;
-    gap: 40px;
-}
-.card {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-
-}
-
-.graficos {
-    margin-top: 100px;
-
-}
-
-.graficos h2 {
-    margin-bottom: 20px;
-
-}
-
-.chart-container {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    height: 400px; /* Fixed height for the chart */
-    margin-top: -800px;
-    max-width: 1100px;
-    margin-left: 300px;
-
-
-}
-
-/*herd*/
-/* Submenú */
 .submenu {
     position: relative;
 }
 
 .submenu .submenu-content {
-    display: block; /* Permitir la animación */
-    max-height: 0; /* Oculta el contenido inicialmente */
-    overflow: hidden; /* Esconde el contenido excedente */
-    transition: max-height 0.5s ease-out; /* Transición suave */
-    margin-left: 20px; /* Indenta las opciones del submenú */
+    display: block;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+    margin-left: 20px;
     flex-direction: column;
 }
 
@@ -114,28 +139,6 @@ body {
     color: #003366;
 }
 
-/* Mostrar el submenú con animación */
 .submenu:hover .submenu-content {
-    max-height: 500px; /* Ajusta este valor según el tamaño del contenido */
-}
-
-.grid-item {
-    background-image: url("");
-}
-
-.chartoso {
-    background: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    text-align: center;
-    margin-top: 20px;
-    max-width: 1100px;
-    margin-left: 300px;
-    margin-bottom: 50px;
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
-
-.text {
-    margin-bottom: 40px;
+    max-height: 500px;
 }
