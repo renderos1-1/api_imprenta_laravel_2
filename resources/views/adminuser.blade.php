@@ -41,6 +41,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeUserModal()">&times;</span>
             <h2 id="modalTitle">Nuevo Usuario</h2>
+            <br>
             <form id="userForm" onsubmit="saveUser(event)">
                 @csrf
                 <input type="hidden" id="userId">
@@ -52,7 +53,7 @@
 
                 <div class="form-group">
                     <label for="dui">DUI</label>
-                    <input type="text" id="dui" name="dui" pattern="[0-9]{8}-[0-9]" placeholder="00000000-0" required>
+                    <input type="text" id="dui" name="dui"  placeholder="00000000-0"  maxlength="10" autofocus pattern="[0-9]{8}-[0-9]" required>
                 </div>
 
                 <div class="form-group">
@@ -72,8 +73,8 @@
 
                 <div class="form-group">
                     <label>
-                        <input type="checkbox" id="is_active" name="is_active" checked>
                         Usuario Activo
+                        <input type="checkbox" id="is_active" name="is_active" checked>
                     </label>
                 </div>
 
@@ -95,6 +96,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,0.4);
+            border-radius: 8px;
         }
 
         .modal-content {
@@ -104,6 +106,7 @@
             border: 1px solid #888;
             width: 80%;
             max-width: 500px;
+            border-radius: 8px;
         }
 
         .close {
@@ -270,6 +273,20 @@
                 }
             });
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const duiInput = document.getElementById('dui');
+
+            duiInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+
+                if (value.length >= 8) {
+                    value = value.substring(0, 8) + '-' + value.substring(8, 9);
+                }
+
+                e.target.value = value;
+            });
+        });
     </script>
 
     <!-- SweetAlert2 CDN -->
