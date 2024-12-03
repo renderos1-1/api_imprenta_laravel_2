@@ -32,16 +32,10 @@ class DashboardController extends Controller
         return view('dash', compact('chartData'));
     }
 
-    public function indexpiechart(): View
-    {
-        // Existing transaction per day data
-        $transactionsPerDay = $this->transactionRepository->getTransactionsPerDay();
-        $chartData = [
-            'labels' => $transactionsPerDay->pluck('date')->toArray(),
-            'values' => $transactionsPerDay->pluck('total')->toArray(),
-        ];
 
-        // Modified person type distribution datajkkks
+    public function graphicsChart(): View
+    {
+        //Codigo para el grafico de pastel juridico/natural
         $personTypeData = $this->transactionRepository->getPersonTypeDistribution();
         $pieChartData = [
             'labels' => $personTypeData->pluck('display_name')->toArray(),
@@ -49,14 +43,8 @@ class DashboardController extends Controller
             'percentages' => $personTypeData->pluck('percentage')->toArray(),
         ];
 
-        return view('dash', compact('chartData', 'pieChartData'));
-    }
-
-    public function revenueChart(): View
-    {
+        //Revenue Chart, grafico para ver la recaudacion
         $revenueData = $this->transactionRepository->getRevenueData();
-
-        // Format data for ChartJS
         $revenueChartData = [
             'labels' => $revenueData->pluck('date')->map(function($date) {
                 return Carbon::parse($date)->format('d/m/Y');
@@ -64,7 +52,7 @@ class DashboardController extends Controller
             'values' => $revenueData->pluck('total_revenue')
         ];
 
-        return view('estadisticas', compact('revenueChartData'));
+        return view('estadisticas', compact('pieChartData','revenueChartData'));
     }
 
 }
