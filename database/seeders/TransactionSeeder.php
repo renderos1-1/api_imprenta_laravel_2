@@ -72,7 +72,7 @@ class TransactionSeeder extends Seeder
     public function run(): void
     {
         $documentTypes = ['dui', 'passport', 'nit'];  // For now just DUI as per requirements
-        $personTypes = ['natural', 'juridica'];
+        $personTypes = ['persona_natural', 'persona_juridica'];
         $statuses = ['completado', 'en_proceso', 'cancelado'];
 
         // Create 50 dummy transactions

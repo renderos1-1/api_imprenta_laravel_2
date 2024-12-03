@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up()
     {
         // First drop existing ENUM types if they exist
@@ -15,7 +14,7 @@ return new class extends Migration
 
         // Then create the ENUM types in PostgreSQL
         DB::statement("CREATE TYPE document_type AS ENUM ('dui', 'passport', 'nit')");
-        DB::statement("CREATE TYPE person_type AS ENUM ('natural', 'juridica')");
+        DB::statement("CREATE TYPE person_type AS ENUM ('persona_natural', 'persona_juridica')");
 
         Schema::create('transactions', function (Blueprint $table) {
             // Primary key - UUID
@@ -27,8 +26,8 @@ return new class extends Migration
             // Enum fields - using PostgreSQL native enums
             $table->enum('document_type', ['dui', 'passport', 'nit'])
                 ->default('dui');
-            $table->enum('person_type', ['natural', 'juridica'])
-                ->default('natural');
+            $table->enum('person_type', ['persona_natural', 'persona_juridica'])
+                ->default('persona_natural');
 
             // Basic fields
             $table->string('document_number');

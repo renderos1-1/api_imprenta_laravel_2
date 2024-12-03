@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,7 +26,6 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard routes
     Route::get('/dash', [DashboardController::class, 'index'])->name('dash');
 
-
     //Estadisticas routes
     Route::get('/estadisticas', [DashboardController::class, 'graphicsChart'])
         ->name('estadisticas');
@@ -38,9 +38,9 @@ Route::middleware(['auth'])->group(function () {
         return view('estadisticas2', ['headerWord' => 'Estadísticas 2']);
     })->name('estadisticas2');
 
-    Route::get('/transacciones', function () {
-        return view('transacciones', ['headerWord' => 'Transacciones']);
-    })->name('transacciones');
+    // Transaction routes
+    Route::get('/transacciones', [TransactionController::class, 'index'])->name('transacciones'); // Cambiado el nombre para que coincida con el menú
+    Route::get('/transacciones/{transaction}', [TransactionController::class, 'show'])->name('transacciones.show');
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

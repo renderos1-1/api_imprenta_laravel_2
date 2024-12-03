@@ -31,7 +31,7 @@ class TransactionRepository
             ->get()
             ->map(function ($item) {
                 // Match the actual values in the databasesss
-                $item->display_name = $item->person_type === 'natural' ? 'Natural' : 'Jurídica';
+                $item->display_name = $item->person_type === 'persona_natural' ? 'Natural' : 'Jurídica';
                 return $item;
             });
     }
