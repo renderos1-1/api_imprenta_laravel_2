@@ -52,7 +52,17 @@ class DashboardController extends Controller
             'values' => $revenueData->pluck('total_revenue')
         ];
 
-        return view('estadisticas', compact('pieChartData','revenueChartData'));
+        //Codigo para ver el tipo de documento que se ha usado
+        $documentTypeData = $this->transactionRepository->getDocumentTypeDistribution();
+        $documentTypeChartData = [
+            'labels' => $documentTypeData->pluck('display_name')->toArray(),
+            'values' => $documentTypeData->pluck('total')->toArray(),
+            'percentages' => $documentTypeData->pluck('percentage')->toArray(),
+        ];
+
+
+
+        return view('estadisticas', compact('pieChartData','revenueChartData','documentTypeChartData'));
     }
 
 }

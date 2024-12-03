@@ -52,5 +52,27 @@ class TransactionRepository
             ->orderBy('date', 'asc')
             ->get();
     }
+
+    public function getDocumentTypeDistribution()
+    {
+        return Transaction::select(
+            'document_type',
+            DB::raw('COUNT(*) as total'),
+            DB::raw('ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM transactions), 2) as percentage')
+        )
+            ->groupBy('document_type')
+            ->get()
+            ->map(function ($item) {
+                $displayNames = [
+                    'dui' => 'DUI',
+                    'passport' => 'Pasaporte',
+                    'nit' => 'NIT'
+                ];
+                $item->display_name = $displayNames[$item->document_type] ?? $item->document_type;
+                return $item;
+            });
+    }
+
+
 }
 

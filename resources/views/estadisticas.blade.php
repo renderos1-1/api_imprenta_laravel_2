@@ -28,7 +28,8 @@
             </div>
 
             <div class="chart-container">
-                <canvas id="locationChart"></canvas>
+                <p>Distribución por tipo de documento</p>
+                <canvas id="documentTypeChart"></canvas>
             </div>
 
             <div class="chart-container">
@@ -102,7 +103,7 @@
             } catch (error) {
                 console.error('Error creating chart:', error);
             }
-
+            //Grafico de pastel para el tipo de persona
             const personTypeCtx = document.getElementById('personTypeChart');
             new Chart(personTypeCtx, {
                 type: 'pie',
@@ -133,6 +134,47 @@
                                     const label = context.label || '';
                                     const value = context.raw || 0;
                                     const percentage = @json($pieChartData['percentages'])[context.dataIndex];
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            //Grafico de pastel para ver el tipo de documento que se ha usado
+            const documentTypeCtx = document.getElementById('documentTypeChart');
+            new Chart(documentTypeCtx, {
+                type: 'pie',
+                data: {
+                    labels: @json($documentTypeChartData['labels']),
+                    datasets: [{
+                        data: @json($documentTypeChartData['values']),
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(255, 206, 86, 0.8)'
+                        ],
+                        borderColor: [
+                            'black',
+                            'black',
+                            'black'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const percentage = @json($documentTypeChartData['percentages'])[context.dataIndex];
                                     return `${label}: ${value} (${percentage}%)`;
                                 }
                             }
