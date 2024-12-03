@@ -7,8 +7,8 @@
             <p>1,234</p>
         </div>
         <div class="card">
-            <h3>Transacciones Hoy</h3>
-            <p>567</p>
+            <h3>Transacciones de Hoy</h3>
+            <p>{{ $todayTransactions }}</p>
         </div>
         <div class="card">
             <h3>Lo que putas axel quiera</h3>

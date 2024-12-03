@@ -21,6 +21,10 @@ class DashboardController extends Controller
         // Get transaction data for the last 30 days
         $transactionsPerDay = $this->transactionRepository->getTransactionsPerDay();
 
+        // Get today's transactions count
+        $todayTransactions = $this->transactionRepository->getTodayTransactionsCount();
+
+
         // Format the data for the chart
         $chartData = [
             'labels' => $transactionsPerDay->pluck('date')->map(function($date) {
@@ -29,7 +33,7 @@ class DashboardController extends Controller
             'values' => $transactionsPerDay->pluck('total')->toArray(),
         ];
 
-        return view('dash', compact('chartData'));
+        return view('dash', compact('chartData', 'todayTransactions'));
     }
 
 
