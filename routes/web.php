@@ -26,6 +26,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dash', [DashboardController::class, 'index'])->name('dash');
     Route::get('/dash', [DashboardController::class, 'indexpiechart'])->name('dash');
 
+    //Estadisticas routes
+    Route::get('/estadisticas', [DashboardController::class, 'statistics'])->name('estadisticas');
+
     // User management routes
     Route::get('/adminuser', [UserController::class, 'index'])->name('adminuser');
     Route::resource('users', UserController::class)->except(['index']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use Illuminate\View\View;
 
@@ -48,5 +49,19 @@ class DashboardController extends Controller
         ];
 
         return view('dash', compact('chartData', 'pieChartData'));
+    }
+
+    // Add this to your DashboardController temporarily
+    public function statistics(): View
+    {
+        // Get a sample transaction
+        $sample = Transaction::first();
+        \Log::info('Sample Transaction:', [
+            'full_json' => $sample->full_json,
+            'structure' => json_encode($sample->full_json, JSON_PRETTY_PRINT)
+        ]);
+
+        $revenueData = $this->transactionRepository->getRevenueAnalysis();
+        return view('estadisticas', compact('revenueData'));
     }
 }
