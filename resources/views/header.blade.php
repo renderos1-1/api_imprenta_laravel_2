@@ -1,7 +1,7 @@
 <div class="content">
     <header>
         <img src="{{ asset('img/Logo_Gobierno.png') }}" alt="logo">
-        <h1>{{ $headerWord ?? 'Pagina Principal' }}</h1>
+        <h1>{{ $headerWord ?? 'Administracion de usuarios' }}</h1>
     </header>
 </div>
 <aside class="sidebar">

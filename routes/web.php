@@ -31,19 +31,16 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('users', UserController::class)->except(['index']);
 
     Route::get('/estadisticas', function () {
-        return view('estadisticas');
+        return view('estadisticas', ['headerWord' => 'Estadísticas']);
     })->name('estadisticas');
 
     Route::get('/estadisticas2', function () {
-        return view('estadisticas2');
+        return view('estadisticas2', ['headerWord' => 'Estadísticas 2']);
     })->name('estadisticas2');
 
-    Route::get('/graficos', function () {
-        return view('graficos');
-    })->name('graficos');
 
     Route::get('/transacciones', function () {
-        return view('transacciones');
+        return view('transacciones', ['headerWord' => 'Transacciones']);
     })->name('transacciones');
 
     // Profile routes
