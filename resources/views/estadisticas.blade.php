@@ -112,8 +112,8 @@
                     datasets: [{
                         data: @json($pieChartData['values']),
                         backgroundColor: [
-                            'rgba(54, 162, 235, 0.8)',
-                            'rgba(255, 99, 132, 0.8)'
+                            '#1D3557',
+                            '#457B9D'
                         ],
                         borderColor: [
                             'black',
@@ -151,9 +151,9 @@
                     datasets: [{
                         data: @json($documentTypeChartData['values']),
                         backgroundColor: [
-                            'rgba(54, 162, 235, 0.8)',
-                            'rgba(255, 99, 132, 0.8)',
-                            'rgba(255, 206, 86, 0.8)'
+                            '#1D3557',
+                            '#457B9D',
+                            '#A8DADC'
                         ],
                         borderColor: [
                             'black',

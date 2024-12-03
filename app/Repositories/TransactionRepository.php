@@ -73,6 +73,12 @@ class TransactionRepository
             });
     }
 
+    public function getTodayTransactionsCount()
+    {
+        return Transaction::whereDate('created_at', Carbon::today())
+            ->count();
+    }
+
 
 }
 

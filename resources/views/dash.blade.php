@@ -6,9 +6,20 @@
             <h3>Usuarios Activos</h3>
             <p>1,234</p>
         </div>
-        <div class="card">
-            <h3>Transacciones Hoy</h3>
-            <p>567</p>
+        <div class="card bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="text-center">
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                    Transacciones Hoy
+                </h3>
+                <br>
+                <p class="text-4xl font-bold text-indigo-600 " style="color: green">
+                    {{ $todayTransactions }}
+                </p>
+                <br>
+                <p class="text-sm text-gray-500 mt-2">
+                    {{ \Carbon\Carbon::now()->format('d/m/Y') }}
+                </p>
+            </div>
         </div>
         <div class="card">
             <h3>Lo que putas axel quiera</h3>
