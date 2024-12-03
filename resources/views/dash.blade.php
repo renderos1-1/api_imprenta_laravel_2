@@ -47,9 +47,9 @@
                         data: @json($chartData['values']),
                         borderColor: '#4a90e2',
                         backgroundColor: 'rgba(74, 144, 226, 0.1)',
-                        borderWidth: 2,
+                        borderWidth: 3,
                         fill: true,
-                        tension: 0.4
+                        tension: 0.1
                     }]
                 },
                 options: {

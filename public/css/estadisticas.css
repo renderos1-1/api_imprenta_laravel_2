@@ -5,7 +5,10 @@
 }
 /* Header Styles */
 .statistics-header {
-    margin-bottom: 24px;
+    margin-bottom: 2px;
+    text-align: center;
+    margin-right: 585px;
+    margin-top: 30px;
 }
 
 .statistics-header h1 {
@@ -21,6 +24,8 @@
     gap: 20px;
     grid-template-columns: repeat(2, 1fr);
     margin-top: 20px;
+    margin-right: 70px;
+
 }
 
 /* Chart Containers */
@@ -30,6 +35,16 @@
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     min-height: 300px; /* Minimum height */
+
+
+}
+
+.chart-container:nth-child(4) {
+    margin-left: 50px;
+}
+
+.chart-container:nth-child(6) {
+    margin-left: 50px;
 }
 
 /* Wide containers for top row */
@@ -42,10 +57,12 @@
     z-index: 1; /* Add this */
 }
 
-canvas {
+.revenueChart {
     width: 100% !important;
     height: 100% !important;
 }
+
+
 
 /* Responsive Design */
 @media (max-width: 1200px) {

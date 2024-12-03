@@ -7,6 +7,7 @@
         </div>
 
         <div class="statistics-grid">
+
             <!-- Top Row - Wider Charts -->
             <div class="chart-container wide">
                 <canvas id="revenueChart"></canvas>
@@ -23,6 +24,10 @@
 
             <div class="chart-container">
                 <canvas id="statusChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="locationChart"></canvas>
             </div>
 
             <div class="chart-container">
