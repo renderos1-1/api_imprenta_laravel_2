@@ -30,100 +30,72 @@
             </div>
         </div>
     </div>
+@endsection
 
-    <!-- Chart.js Script -->
-    @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const revenueData = @json($revenueData);
+            // Add console logs to debug
+            console.log('Chart initialization starting');
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
 
-            const ctx = document.getElementById('revenueChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: revenueData.map(item => item.date),
-                    datasets: [
-                        {
+            // Log the data we're receiving
+            const labels = {!! json_encode($revenueChartData['labels']) !!};
+            const values = {!! json_encode($revenueChartData['values']) !!};
+
+            console.log('Labels:', labels);
+            console.log('Values:', values);
+
+            // Make sure the canvas is properly sized
+            const canvas = document.getElementById('revenueChart');
+            console.log('Canvas dimensions:', canvas.width, canvas.height);
+
+            try {
+                new Chart(revenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
                             label: 'Ingresos Diarios',
-                            data: revenueData.map(item => parseFloat(item.daily_revenue)),
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y'
-                        },
-                        {
-                            label: 'Promedio de Ingresos',
-                            data: revenueData.map(item => parseFloat(item.avg_revenue)),
-                            type: 'line',
-                            fill: false,
-                            borderColor: 'rgba(255, 99, 132, 1)',
+                            data: values,
+                            borderColor: '#0ea5e9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.1)',
                             tension: 0.4,
-                            yAxisID: 'y'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
+                            fill: true,
+                            pointStyle: 'circle',
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
                     },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Análisis de Ingresos (Últimos 7 días)',
-                            font: {
-                                size: 16
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.y !== null) {
-                                        label += new Intl.NumberFormat('es-SV', {
-                                            style: 'currency',
-                                            currency: 'USD'
-                                        }).format(context.parsed.y);
-                                    }
-                                    return label;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Fecha'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Monto ($)'
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top'
                             },
-                            ticks: {
-                                callback: function(value) {
-                                    return new Intl.NumberFormat('es-SV', {
-                                        style: 'currency',
-                                        currency: 'USD'
-                                    }).format(value);
+                            title: {
+                                display: true,
+                                text: 'Ingresos en el Tiempo'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toFixed(2);
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            });
+                });
+                console.log('Chart initialized successfully');
+            } catch (error) {
+                console.error('Error creating chart:', error);
+            }
         });
-
     </script>
-    @endpush
-@endsection
+@endpush

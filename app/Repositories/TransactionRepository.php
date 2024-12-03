@@ -36,25 +36,21 @@ class TransactionRepository
             });
     }
 
-    public function getRevenueAnalysis($days = 7)
+    public function getRevenueData($days = 30)
     {
-        return Transaction::select(
-            DB::raw('DATE(created_at) as date'),
-            DB::raw('COUNT(*) as transactions_count'),
-            DB::raw('COALESCE(SUM((full_json->\'tramite\'->\'datos\'->\'total_a_pagar\')::numeric), 0) as daily_revenue'),
-            DB::raw('COALESCE(AVG((full_json->\'tramite\'->\'datos\'->\'total_a_pagar\')::numeric), 0) as avg_revenue')
-        )
-            ->where('created_at', '>=', Carbon::now()->subDays($days))
-            ->where('status', 'completado')  // Only include completed transactions
-            ->groupBy(DB::raw('DATE(created_at)'))
-            ->orderBy('date')
-            ->get()
-            ->map(function ($item) {
-                // Format numbers to 2 decimal places
-                $item->daily_revenue = number_format($item->daily_revenue, 2, '.', '');
-                $item->avg_revenue = number_format($item->avg_revenue, 2, '.', '');
-                return $item;
-            });
+        return DB::table('transactions')
+            ->select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('SUM(CAST(
+                (full_json::jsonb->\'tramite\'->\'datos\'->5->\'total_a_pagar\')::text
+                AS DECIMAL(10,2))
+            ) as total_revenue')
+            )
+            ->where('created_at', '>=', now()->subDays($days))
+            ->where('status', 'completado')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
     }
 }
 

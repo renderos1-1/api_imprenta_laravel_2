@@ -27,20 +27,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dash', [DashboardController::class, 'indexpiechart'])->name('dash');
 
     //Estadisticas routes
-    Route::get('/estadisticas', [DashboardController::class, 'statistics'])->name('estadisticas');
+    Route::get('/estadisticas', [DashboardController::class, 'revenueChart'])
+        ->name('estadisticas');
 
     // User management routes
     Route::get('/adminuser', [UserController::class, 'index'])->name('adminuser');
     Route::resource('users', UserController::class)->except(['index']);
 
-    Route::get('/estadisticas', function () {
-        return view('estadisticas', ['headerWord' => 'Estadísticas']);
-    })->name('estadisticas');
-
     Route::get('/estadisticas2', function () {
         return view('estadisticas2', ['headerWord' => 'Estadísticas 2']);
     })->name('estadisticas2');
-
 
     Route::get('/transacciones', function () {
         return view('transacciones', ['headerWord' => 'Transacciones']);

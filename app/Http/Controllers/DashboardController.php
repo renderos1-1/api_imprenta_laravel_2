@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
+use Carbon\Carbon;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    protected $transactionRepository;
+    protected TransactionRepository $transactionRepository;
 
     public function __construct(TransactionRepository $transactionRepository)
     {
@@ -51,17 +52,19 @@ class DashboardController extends Controller
         return view('dash', compact('chartData', 'pieChartData'));
     }
 
-    // Add this to your DashboardController temporarily
-    public function statistics(): View
+    public function revenueChart(): View
     {
-        // Get a sample transaction
-        $sample = Transaction::first();
-        \Log::info('Sample Transaction:', [
-            'full_json' => $sample->full_json,
-            'structure' => json_encode($sample->full_json, JSON_PRETTY_PRINT)
-        ]);
+        $revenueData = $this->transactionRepository->getRevenueData();
 
-        $revenueData = $this->transactionRepository->getRevenueAnalysis();
-        return view('estadisticas', compact('revenueData'));
+        // Format data for ChartJS
+        $revenueChartData = [
+            'labels' => $revenueData->pluck('date')->map(function($date) {
+                return Carbon::parse($date)->format('d/m/Y');
+            }),
+            'values' => $revenueData->pluck('total_revenue')
+        ];
+
+        return view('estadisticas', compact('revenueChartData'));
     }
+
 }

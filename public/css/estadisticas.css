@@ -1,9 +1,8 @@
 /* Main Container */
 .statistics-container {
     padding: 20px;
-    min-height: 100vh;
+    width: 100%;
 }
-
 /* Header Styles */
 .statistics-header {
     margin-bottom: 24px;
@@ -19,8 +18,8 @@
 /* Grid Layout */
 .statistics-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
     margin-top: 20px;
 }
 
@@ -29,14 +28,23 @@
     background: white;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    min-height: 400px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-height: 300px; /* Minimum height */
 }
 
 /* Wide containers for top row */
 .chart-container.wide {
-    grid-column: span 3;
-    min-height: 450px;
+    grid-column: span 2;
+    height: 400px;
+    background-color: white; /* Add this */
+    border: 1px solid #ddd; /* Add this */
+    position: relative; /* Add this */
+    z-index: 1; /* Add this */
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* Responsive Design */
