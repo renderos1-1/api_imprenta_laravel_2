@@ -1,67 +1,49 @@
 @extends('layout')
-@section('title','Transacciones')
+
+@section('title', 'Transacciones')
+
 @section('content')
-    <div class="log-events">
-        <h2>Registro de Eventos de Usuario</h2>
+    <div class="contenedor">
+        <h1>Buscar en la Base de Datos</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Buscar por Nombre o DUI">
+        </div>
         <table>
             <thead>
             <tr>
-                <th>Usuario</th>
-                <th>Acción</th>
-                <th>Fecha</th>
-                <th>Hora</th>
+                <th>Nombre Completo</th>
+                <th>DUI</th>
+                <th>Tipo de Persona</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="dataTable">
             <tr>
                 <td>Juan Pérez</td>
-                <td>Inició sesión</td>
-                <td>2024-11-28</td>
-                <td>09:00:12</td>
+                <td>00000000-1</td>
+                <td>Natural</td>
+                <td>juan.perez@mail.com</td>
+                <td>1234-5678</td>
             </tr>
             <tr>
                 <td>María López</td>
-                <td>Accedió al reporte mensual</td>
-                <td>2024-11-28</td>
-                <td>09:15:45</td>
+                <td>12345678-9</td>
+                <td>Jurídica</td>
+                <td>maria.lopez@mail.com</td>
+                <td>8765-4321</td>
             </tr>
             <tr>
                 <td>Carlos Gómez</td>
-                <td>Descargó el informe de estadísticas</td>
-                <td>2024-11-28</td>
-                <td>09:30:22</td>
-            </tr>
-            <tr>
-                <td>Juan Pérez</td>
-                <td>Actualizó su perfil</td>
-                <td>2024-11-28</td>
-                <td>09:45:10</td>
-            </tr>
-            <tr>
-                <td>María López</td>
-                <td>Accedió a la sección de gráficos</td>
-                <td>2024-11-28</td>
-                <td>10:00:30</td>
-            </tr>
-            <tr>
-                <td>Carlos Gómez</td>
-                <td>Solicitó la descarga de datos</td>
-                <td>2024-11-28</td>
-                <td>10:15:00</td>
-            </tr>
-            <tr>
-                <td>Ana Martínez</td>
-                <td>Generó un nuevo reporte</td>
-                <td>2024-11-28</td>
-                <td>10:30:45</td>
-            </tr>
-            <tr>
-                <td>Juan Pérez</td>
-                <td>Cerró sesión</td>
-                <td>2024-11-28</td>
-                <td>10:45:55</td>
+                <td>98765432-1</td>
+                <td>Natural</td>
+                <td>carlos.gomez@mail.com</td>
+                <td>1357-2468</td>
             </tr>
             </tbody>
         </table>
     </div>
+    <link rel="stylesheet" href="{{ asset('css/transacciones.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ mix('js/transacciones.js') }}"></script>
 @endsection
