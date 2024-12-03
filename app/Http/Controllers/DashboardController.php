@@ -24,6 +24,11 @@ class DashboardController extends Controller
         // Get today's transactions count
         $todayTransactions = $this->transactionRepository->getTodayTransactionsCount();
 
+        // Today's revenue total
+        $todayRevenue = $this->transactionRepository->getTodayRevenue();
+
+        // Format the number with commas for thousands
+        $formattedTodayRevenue = number_format($todayRevenue, 2);
 
         // Format the data for the chart
         $chartData = [
@@ -33,7 +38,7 @@ class DashboardController extends Controller
             'values' => $transactionsPerDay->pluck('total')->toArray(),
         ];
 
-        return view('dash', compact('chartData', 'todayTransactions'));
+        return view('dash', compact('chartData', 'todayTransactions', 'todayRevenue', 'formattedTodayRevenue'));
     }
 
 

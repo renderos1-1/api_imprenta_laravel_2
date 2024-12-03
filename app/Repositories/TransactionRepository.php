@@ -79,6 +79,21 @@ class TransactionRepository
             ->count();
     }
 
+    public function getTodayRevenue()
+    {
+        return DB::table('transactions')
+            ->select(
+                DB::raw('SUM(CAST(
+                (full_json::jsonb->\'tramite\'->\'datos\'->5->\'total_a_pagar\')::text
+                AS DECIMAL(10,2))
+            ) as daily_revenue')
+            )
+            ->whereDate('created_at', Carbon::today())
+            ->where('status', 'completado')
+            ->first()
+            ->daily_revenue ?? 0.00;
+    }
+
 
 }
 

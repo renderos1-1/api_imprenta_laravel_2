@@ -2,14 +2,10 @@
 @section('title','Dash')
 @section('content')
     <div class="dashboard">
-        <div class="card">
-            <h3>Usuarios Activos</h3>
-            <p>1,234</p>
-        </div>
         <div class="card bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
             <div class="text-center">
                 <h3 class="text-xl font-semibold text-gray-900 mb-2">
-                    Transacciones Hoy
+                    Transacciones de Hoy
                 </h3>
                 <br>
                 <p class="text-4xl font-bold text-indigo-600 " style="color: green">
@@ -21,9 +17,12 @@
                 </p>
             </div>
         </div>
-        <div class="card">
-            <h3>Lo que putas axel quiera</h3>
-            <p>246,830,407</p>
+        <div class="card bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Ingresos Diarios</h3>
+            <br>
+            <p class="text-3xl font-bold text-indigo-600" style="color: green">${{ $formattedTodayRevenue }}</p>
+            <br>
+            <p class="text-sm text-gray-500 mt-2">Total del día {{ \Carbon\Carbon::today()->format('d/m/Y') }}</p>
         </div>
     </div>
 
@@ -35,12 +34,6 @@
     </div>
 
     {{-- New pie chart container --}}
-    <div class="chartoso">
-        <h2 class="text">Distribución por Tipo de Persona</h2>
-        <div class="w-full" style="max-width: 500px; margin: 0 auto;">
-            <canvas id="personTypeChart"></canvas>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
