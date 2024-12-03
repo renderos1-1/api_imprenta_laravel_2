@@ -15,6 +15,7 @@
         <a href="#" class="submenu-toggle">Configuraciones</a>
         <div class="submenu-content">
             <a href="{{ route('adminuser') }}">Administración de Usuarios</a>
+            <a href="{{ route('userlog') }}">Registro de Actividades</a>
         </div>
     </div>
 </aside>

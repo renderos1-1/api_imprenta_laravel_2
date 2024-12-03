@@ -38,6 +38,12 @@ Route::middleware(['auth'])->group(function () {
         return view('estadisticas2', ['headerWord' => 'Estadísticas 2']);
     })->name('estadisticas2');
 
+    Route::get('/userlog', function () {
+        return view('userlog', ['headerWord' => 'Registro de actividades']);
+    })->name('userlog');
+
+
+
     // Transaction routes
     Route::get('/transacciones', [TransactionController::class, 'index'])->name('transacciones'); // Cambiado el nombre para que coincida con el menú
     Route::get('/transacciones/{transaction}', [TransactionController::class, 'show'])->name('transacciones.show');
