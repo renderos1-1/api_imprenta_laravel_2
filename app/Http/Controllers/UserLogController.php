@@ -19,7 +19,8 @@ class UserLogController extends Controller
      */
     public function index(): View
     {
-        $logs = $this->userLogRepository->getPaginatedLogs(25);
+        // Obtener solo los últimos 20 registros
+        $logs = $this->userLogRepository->getLatestLogs(20);
         return view('userlog', compact('logs'));
     }
 }

@@ -9,10 +9,6 @@ class UserLogRepository
 {
     /**
      * Create a new user log entry
-     *
-     * @param string $dui
-     * @param string $action
-     * @return UserLog
      */
     public function log(string $dui, string $action): UserLog
     {
@@ -25,30 +21,25 @@ class UserLogRepository
     }
 
     /**
-     * Get paginated user logs
-     *
-     * @param int $perPage
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * Get the latest logs with limit
      */
-    public function getPaginatedLogs(int $perPage = 15)
+    public function getLatestLogs(int $limit = 20)
     {
         return UserLog::with('user')
             ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+            ->take($limit)
+            ->get();
     }
 
     /**
      * Get logs for a specific user
-     *
-     * @param string $dui
-     * @param int $perPage
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getUserLogs(string $dui, int $perPage = 15)
+    public function getUserLogs(string $dui, int $limit = 20)
     {
         return UserLog::with('user')
             ->where('dui', $dui)
             ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+            ->take($limit)
+            ->get();
     }
 }
