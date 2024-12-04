@@ -13,26 +13,18 @@
                 <canvas id="revenueChart"></canvas>
             </div>
 
-            <div class="chart-container wide">
-                <canvas id="transactionsChart"></canvas>
-            </div>
-
             <!-- Bottom Row - Smaller Charts -->
-            <div class="chart-container">
+            <div class="chart-container wide">
                 <p>Distribución por tipo de persona</p>
                 <canvas id="personTypeChart"></canvas>
             </div>
 
-            <div class="chart-container">
-                <canvas id="statusChart"></canvas>
-            </div>
-
-            <div class="chart-container">
+            <div class="chart-container wide">
                 <p>Distribución por tipo de documento</p>
                 <canvas id="documentTypeChart"></canvas>
             </div>
 
-            <div class="chart-container">
+            <div class="chart-container wide">
                 <canvas id="locationChart"></canvas>
             </div>
         </div>
@@ -182,6 +174,7 @@
                     }
                 }
             });
+
         });
     </script>
 @endpush
