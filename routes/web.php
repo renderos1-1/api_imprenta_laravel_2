@@ -67,6 +67,11 @@ Route::middleware(['auth'])->group(function () {
             ->name('transacciones.show');
     });
 
+    Route::middleware(['auth'])->group(function () {
+        // ... otras rutas existentes ...
+        Route::get('/userlog', [\App\Http\Controllers\UserLogController::class, 'index'])->name('userlog');
+    });
+
     // Profile routes
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'edit'])
