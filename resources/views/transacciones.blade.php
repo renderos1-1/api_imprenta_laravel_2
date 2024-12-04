@@ -5,6 +5,16 @@
 @section('content')
     <div class="contenedor">
         <h1>Buscar en la Base de Datos</h1>
+        <br>
+        <br>
+
+        {{-- Mensaje informativo --}}
+        @if(!request('search_dui') && !request('search_name'))
+            <div class="alert alert-info" role="alert">
+                Mostrando las 50 transacciones más recientes. Utilice la búsqueda para encontrar transacciones específicas.
+            </div>
+        @endif
+
         <div class="search-container">
             <form method="GET" action="{{ route('transacciones') }}">
                 <div class="search-inputs">
@@ -23,9 +33,21 @@
                            value="{{ request('search_name') }}">
 
                     <button type="submit" class="search-button">Buscar</button>
+
+                    {{-- Botón para limpiar búsqueda --}}
+                    @if(request('search_dui') || request('search_name'))
+                        <a href="{{ route('transacciones') }}" class="btn btn-secondary">Limpiar búsqueda</a>
+                    @endif
                 </div>
             </form>
         </div>
+
+        {{-- Contador de resultados para búsquedas --}}
+        @if(request('search_dui') || request('search_name'))
+            <div class="results-info">
+                <p>Resultados encontrados: {{ $transactions->count() }}</p>
+            </div>
+        @endif
 
         <div class="table-container">
             <table>
@@ -49,9 +71,9 @@
                         <td>{{ $transaction->email }}</td>
                         <td>{{ $transaction->phone }}</td>
                         <td>
-                                <span class="status-badge status-{{ $transaction->status }}">
-                                    {{ ucfirst($transaction->status) }}
-                                </span>
+                            <span class="status-badge status-{{ $transaction->status }}">
+                                {{ ucfirst($transaction->status) }}
+                            </span>
                         </td>
                         <td>{{ $transaction->created_at->format('d/m/Y H:i') }}</td>
                     </tr>
@@ -63,12 +85,6 @@
                 </tbody>
             </table>
         </div>
-
-        @if($transactions->hasPages())
-            <div class="pagination-container">
-                {{ $transactions->links() }}
-            </div>
-        @endif
     </div>
 
     <link rel="stylesheet" href="{{ asset('css/transacciones.css') }}">
@@ -106,5 +122,37 @@
         });
     </script>
 
+    {{-- Añadimos estilos adicionales --}}
+    <style>
+        .alert {
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 4px;
+        }
 
+        .alert-info {
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1565c0;
+        }
+
+        .results-info {
+            margin: 10px 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .btn-secondary {
+            margin-left: 10px;
+            padding: 8px 15px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+    </style>
 @endsection

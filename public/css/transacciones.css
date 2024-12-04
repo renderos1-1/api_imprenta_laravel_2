@@ -61,6 +61,7 @@
 .contenedor{
     padding-left: 250px;
     padding-top: 50px;
+    margin-right: 30px;
 
 }
 
@@ -218,5 +219,45 @@ tbody tr:nth-child(even) {
 /* Row hover effect */
 tbody tr:hover {
     background-color: #e8f4fd; /* Fondo azul claro al pasar el cursor */
+}
+
+/* Añade estos estilos a tu archivo transacciones.css */
+.alert {
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 4px;
+}
+
+.alert-info {
+    background-color: #e3f2fd;
+    border: 1px solid #90caf9;
+    color: #1565c0;
+}
+
+.results-info {
+    margin: 10px 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.search-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn-secondary {
+    margin-left: 10px;
+    padding: 8px 15px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    color: white;
 }
 
