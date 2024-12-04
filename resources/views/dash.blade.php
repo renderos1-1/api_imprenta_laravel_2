@@ -53,7 +53,7 @@
                         backgroundColor: 'rgba(74, 144, 226, 0.1)',
                         borderWidth: 3,
                         fill: true,
-                        tension: 0.1
+                        tension: 0.5
                     }]
                 },
                 options: {
