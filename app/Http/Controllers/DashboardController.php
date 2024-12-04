@@ -71,7 +71,10 @@ class DashboardController extends Controller
 
 
 
+
         return view('estadisticas', compact('pieChartData','revenueChartData','documentTypeChartData'));
     }
+
+
 
 }

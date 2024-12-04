@@ -45,13 +45,6 @@
     text-align: center;
 }
 
-.chart-container:nth-child(4) {
-    margin-left: 50px;
-}
-
-.chart-container:nth-child(6) {
-    margin-left: 50px;
-}
 
 /* Wide containers for top row */
 .chart-container.wide {
