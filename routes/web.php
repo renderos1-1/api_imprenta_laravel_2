@@ -27,34 +27,55 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard routes
     Route::get('/dash', [DashboardController::class, 'index'])->name('dash');
 
-    //Estadisticas routes
-    Route::get('/estadisticas', [DashboardController::class, 'graphicsChart'])
-        ->name('estadisticas');
+    // Statistics routes
+    Route::prefix('estadisticas')->group(function () {
+        Route::get('/', [DashboardController::class, 'graphicsChart'])
+            ->name('estadisticas');
 
-    // User management routes
-    Route::get('/adminuser', [UserController::class, 'index'])->name('adminuser');
-    Route::resource('users', UserController::class)->except(['index']);
+        // Chart data API endpoints
+        Route::post('/api/chart-data/{type}', [DashboardController::class, 'getChartData'])
+            ->name('chart.data');
 
+        // Export endpoints
+        Route::post('/export/{type}', [DashboardController::class, 'exportChart'])
+            ->name('chart.export');
+    });
+
+    // Estadisticas 2 route
     Route::get('/estadisticas2', function () {
         return view('estadisticas2', ['headerWord' => 'Estadísticas 2']);
     })->name('estadisticas2');
 
+    // User management routes
+    Route::prefix('users')->group(function () {
+        Route::get('/admin', [UserController::class, 'index'])->name('adminuser');
+        Route::resource('/', UserController::class)->except(['index']);
+    });
+
+    // User log route
     Route::get('/userlog', function () {
         return view('userlog', ['headerWord' => 'Registro de actividades']);
     })->name('userlog');
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-
-
     // Transaction routes
-    Route::get('/transacciones', [TransactionController::class, 'index'])->name('transacciones'); // Cambiado el nombre para que coincida con el menú
-    Route::get('/transacciones/{transaction}', [TransactionController::class, 'show'])->name('transacciones.show');
+    Route::prefix('transacciones')->group(function () {
+        Route::get('/', [TransactionController::class, 'index'])
+            ->name('transacciones');
+        Route::get('/{transaction}', [TransactionController::class, 'show'])
+            ->name('transacciones.show');
+    });
 
     // Profile routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])
+            ->name('profile.edit');
+        Route::patch('/', [ProfileController::class, 'update'])
+            ->name('profile.update');
+        Route::delete('/', [ProfileController::class, 'destroy'])
+            ->name('profile.destroy');
+    });
 });
 
 /*
