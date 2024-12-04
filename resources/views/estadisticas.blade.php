@@ -4,7 +4,8 @@
     <div class="statistics-container">
         <div class="statistics-header">
             <h1>Estadísticas del Sistema</h1>
-
+            <br>
+            <br>
             <!-- Date Range Selector -->
             <div class="card mb-4">
                 <div class="card-body">
@@ -46,7 +47,9 @@
                     <button class="btn btn-outline-primary" onclick="openExportModal('revenue')">
                         <i class="fas fa-download"></i> Exportar
                     </button>
+
                 </div>
+                <br>
                 <canvas id="revenueChart"></canvas>
             </div>
 
@@ -57,7 +60,9 @@
                     <button class="btn btn-outline-primary" onclick="openExportModal('personType')">
                         <i class="fas fa-download"></i> Exportar
                     </button>
+
                 </div>
+                <br>
                 <canvas id="personTypeChart"></canvas>
             </div>
 
@@ -68,7 +73,9 @@
                     <button class="btn btn-outline-primary" onclick="openExportModal('documentType')">
                         <i class="fas fa-download"></i> Exportar
                     </button>
+
                 </div>
+                <br>
                 <canvas id="documentTypeChart"></canvas>
             </div>
         </div>

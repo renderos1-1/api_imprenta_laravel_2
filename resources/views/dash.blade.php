@@ -29,7 +29,7 @@
     <div class="graficos">
 
     </div>
-    <div class="chart-container">
+    <div class="chart-container" id="loco">
         <canvas id="transactionsChart"></canvas>
     </div>
 
@@ -41,6 +41,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('transactionsChart').getContext('2d');
+
+            const canvas = document.getElementById('loco');
+            console.log('Canvas dimensions:', canvas.width, canvas.height);
 
             new Chart(ctx, {
                 type: 'line',
