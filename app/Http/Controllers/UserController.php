@@ -10,15 +10,20 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
+    /**
+     * Display a listing of the users.
+     */
     public function index()
     {
-        $users = User::with('role')->get(); // Get all users with their roles
+        $users = User::with('role')->get(); // Load all users with their roles
         $roles = Role::all(); // Get all roles
 
-        // Make sure we're returning to 'adminuser' view (not 'users.index')
         return view('adminuser', compact('users', 'roles'));
     }
 
+    /**
+     * Store a newly created user in storage.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -46,6 +51,9 @@ class UserController extends Controller
         return response()->json(['message' => 'Usuario creado exitosamente', 'user' => $user]);
     }
 
+    /**
+     * Update the specified user in storage.
+     */
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
@@ -65,21 +73,21 @@ class UserController extends Controller
         }
 
         $user->update($validated);
-        $user->last_modified_by = auth()->id();
-        $user->save();
 
         return response()->json(['message' => 'Usuario actualizado exitosamente', 'user' => $user]);
     }
 
+    /**
+     * Remove the specified user from storage.
+     */
     public function destroy(User $user)
     {
         if ($user->id === auth()->id()) {
             return response()->json(['message' => 'No puedes eliminar tu propio usuario'], 403);
         }
 
-        $user->is_active = false;
-        $user->save();
+        $user->delete();
 
-        return response()->json(['message' => 'Usuario desactivado exitosamente']);
+        return response()->json(['message' => 'Usuario eliminado exitosamente']);
     }
 }
