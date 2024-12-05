@@ -6,11 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserLog extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'dui',
         'action',
@@ -18,18 +13,13 @@ class UserLog extends Model
         'full_name',
     ];
 
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
+    protected $dates = ['created_at'];
+
     public $timestamps = false;
 
-    /**
-     * Get the user that owns the log entry.
-     */
     public function user()
     {
+        // Asumiendo que en la tabla users tienes una columna 'name' y 'dui'
         return $this->belongsTo(User::class, 'dui', 'dui');
     }
 }

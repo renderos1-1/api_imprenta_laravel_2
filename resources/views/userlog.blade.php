@@ -159,7 +159,7 @@
                         <td>
                             <span class="dui-text">{{ $log->dui }}</span>
                         </td>
-                        <td>{{ $log->full_name ?? 'N/A' }}</td>
+                        <td>{{ $log->full_name ?? 'Usuario no encontrado' }}</td>
                         <td>
                                 <span class="status-badge {{ $log->action === 'login' ? 'status-login' : 'status-logout' }}">
                                     {{ $log->action === 'login' ? 'Inicio de sesión' : 'Cierre de sesión' }}
