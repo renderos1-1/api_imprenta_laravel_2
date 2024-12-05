@@ -15,7 +15,7 @@ class UserLog extends Model
         'dui',
         'action',
         'ip_address',
-        'user_agent'
+        'full_name',
     ];
 
     /**
