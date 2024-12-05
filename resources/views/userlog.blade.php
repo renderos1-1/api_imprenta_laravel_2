@@ -141,7 +141,7 @@
                 <tr>
                     <th>Fecha y Hora</th>
                     <th>DUI</th>
-                    <th>Usuario</th>
+                    <th>Nombre</th>
                     <th>Acción</th>
                     <th>IP</th>
                 </tr>
