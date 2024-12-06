@@ -24,11 +24,17 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Log::info('Loading routes from RouteServiceProvider');
+
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
         $this->routes(function () {
+
+            \Log::info('API Routes file exists: ' . file_exists(base_path('routes/api.php')));
+            \Log::info('Web Routes file exists: ' . file_exists(base_path('routes/web.php')));
+
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));

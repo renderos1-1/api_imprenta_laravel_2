@@ -29,10 +29,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dash', [DashboardController::class, 'index'])->name('dash');
 
     // Statistics routes
-    Route::prefix('estadisticas')->group(function () {
-        Route::get('/', [DashboardController::class, 'graphicsChart'])->name('estadisticas');
-        Route::post('/api/chart-data/{type}', [DashboardController::class, 'getChartData'])->name('chart.data');
-        Route::post('/export/{type}', [DashboardController::class, 'exportChart'])->name('chart.export');
+    // In web.php
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/estadisticas', [DashboardController::class, 'graphicsChart'])
+            ->name('estadisticas');
     });
 
     // Estadisticas 2 route
