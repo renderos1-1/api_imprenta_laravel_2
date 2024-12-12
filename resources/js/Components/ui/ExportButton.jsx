@@ -22,9 +22,18 @@ const ExportButton = ({
                       }) => {
     const [isExporting, setIsExporting] = useState(false);
 
+    // Map format to file extension
+    const getFileExtension = (format) => {
+        const extensions = {
+            'pdf': 'pdf',
+            'excel': 'xlsx',
+            'csv': 'csv'
+        };
+        return extensions[format] || format;
+    };
+
     const handleExport = async (format) => {
         try {
-            console.log('Exporting with format:', format); // Debug log
             setIsExporting(true);
             const response = await fetch(`/api/export/revenue`, {
                 method: 'POST',
@@ -33,7 +42,7 @@ const ExportButton = ({
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
                 },
                 body: JSON.stringify({
-                    format: format, // Make sure format is included
+                    format: format,
                     start_date: startDate,
                     end_date: endDate
                 })
@@ -49,7 +58,8 @@ const ExportButton = ({
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `revenue_${startDate}_${endDate}.${format}`;
+            // Use the correct file extension
+            a.download = `revenue_${startDate}_${endDate}.${getFileExtension(format)}`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
@@ -57,7 +67,6 @@ const ExportButton = ({
 
         } catch (error) {
             console.error('Export error:', error);
-            // Show error to user (you might want to use a toast or alert component)
         } finally {
             setIsExporting(false);
         }
