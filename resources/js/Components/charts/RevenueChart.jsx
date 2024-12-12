@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import ExportButton from '../ui/ExportButton'; // Updated import
 
 const RevenueChart = () => {
     const [data, setData] = useState([]);
@@ -16,10 +17,16 @@ const RevenueChart = () => {
             setIsLoading(true);
             setError(null);
 
+            // Validate date range
+            if (new Date(dateRange.end_date) < new Date(dateRange.start_date)) {
+                throw new Error('La fecha final debe ser posterior a la fecha inicial');
+            }
+
             const response = await fetch('/api/chart-data/revenue', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
                 },
                 body: JSON.stringify(dateRange)
@@ -32,10 +39,15 @@ const RevenueChart = () => {
 
             const jsonData = await response.json();
 
-            // Ensure data is properly formatted
+            // Data validation and formatting
+            if (!Array.isArray(jsonData)) {
+                throw new Error('Invalid data format received');
+            }
+
             const formattedData = jsonData.map(item => ({
                 date: item.date,
-                total: Number(item.total) || 0
+                total: typeof item.total === 'number' ? item.total :
+                    typeof item.total === 'string' ? parseFloat(item.total) : 0
             }));
 
             setData(formattedData);
@@ -54,10 +66,25 @@ const RevenueChart = () => {
 
     const handleDateChange = (e) => {
         const { name, value } = e.target;
-        setDateRange(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setDateRange(prev => {
+            const newRange = {
+                ...prev,
+                [name]: value
+            };
+
+            // Validate date range
+            if (name === 'end_date' && new Date(value) < new Date(prev.start_date)) {
+                setError('La fecha final debe ser posterior a la fecha inicial');
+                return prev;
+            }
+            if (name === 'start_date' && new Date(value) > new Date(prev.end_date)) {
+                setError('La fecha inicial debe ser anterior a la fecha final');
+                return prev;
+            }
+
+            setError(null);
+            return newRange;
+        });
     };
 
     const formatCurrency = (value) => {
@@ -86,27 +113,36 @@ const RevenueChart = () => {
 
     return (
         <div className="w-full">
-            <div className="mb-4 flex gap-4">
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Desde:</label>
-                    <input
-                        type="date"
-                        name="start_date"
-                        value={dateRange.start_date}
-                        onChange={handleDateChange}
-                        className="border rounded px-2 py-1 text-sm"
-                    />
+            <div className="flex justify-between items-center mb-4">
+                <div className="flex gap-4">
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium">Desde:</label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            value={dateRange.start_date}
+                            onChange={handleDateChange}
+                            className="border rounded px-2 py-1 text-sm"
+                        />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium">Hasta:</label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value={dateRange.end_date}
+                            onChange={handleDateChange}
+                            className="border rounded px-2 py-1 text-sm"
+                        />
+                    </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Hasta:</label>
-                    <input
-                        type="date"
-                        name="end_date"
-                        value={dateRange.end_date}
-                        onChange={handleDateChange}
-                        className="border rounded px-2 py-1 text-sm"
-                    />
-                </div>
+
+                <ExportButton
+                    chartType="revenue"
+                    startDate={dateRange.start_date}
+                    endDate={dateRange.end_date}
+                    disabled={isLoading || data.length === 0}
+                />
             </div>
 
             <div className="h-96">

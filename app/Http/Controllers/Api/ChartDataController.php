@@ -148,5 +148,27 @@ class ChartDataController extends Controller
         }
     }
 
+    public function getStageDurationData(Request $request)
+    {
+        try {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+
+            $data = $this->transactionRepository->getAverageStageDuration($startDate, $endDate);
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+            Log::error('Error in getStageDurationData', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'error' => 'Error retrieving stage duration data'
+            ], 500);
+        }
+    }
+
+
 
 }

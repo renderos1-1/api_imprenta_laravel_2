@@ -5,6 +5,7 @@ import PersonTypeChart from './charts/PersonTypeChart';
 import DocumentTypeChart from './charts/DocumentTypeChart';
 import DepartmentsChart from './charts/DepartmentsChart';
 import { Button } from '@/components/ui/button';
+import StageDurationChart from "./charts/StageDurationChart.jsx";
 
 const Statistics = () => {
     return (
@@ -74,6 +75,22 @@ const Statistics = () => {
                     <DepartmentsChart />
                 </div>
             </Card>
+
+            {/* Stage Duration Analysis Chart */}
+            <Card className="p-6 w-full">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-semibold">Análisis de duración de etapas</h2>
+                    <Button variant="outline" onClick={() => {}}>
+                        Exportar
+                    </Button>
+                </div>
+                <div className="w-full h-[600px] overflow-x-auto">
+                    <div className="min-w-[800px] h-full">
+                        <StageDurationChart />
+                    </div>
+                </div>
+            </Card>
+
         </div>
     );
 };
