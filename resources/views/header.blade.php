@@ -1,4 +1,4 @@
-<div class="content">
+<div class="contepepe">
     <header>
         <img src="{{ asset('img/Logo_Gobierno.png') }}" alt="logo">
         <h1>{{ $headerWord ?? 'Administración de Usuarios' }}</h1>

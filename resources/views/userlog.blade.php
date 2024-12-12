@@ -128,6 +128,13 @@
 @endpush
 
 @section('content')
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <div class="contenedor">
         <div class="title-section">
             <h2>Registro de Actividades

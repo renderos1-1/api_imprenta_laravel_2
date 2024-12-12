@@ -1,6 +1,13 @@
 @extends('layout')
 @section('title','Administrador de usuarios')
 @section('content')
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <main class="main-content">
         <div class="user-management">
             <div class="actions-bar">

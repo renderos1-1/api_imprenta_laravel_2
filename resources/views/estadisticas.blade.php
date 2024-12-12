@@ -1,3 +1,9 @@
+
+@extends('layout')
+
+@section('title', 'Estadisticas')
+
+@section('content')
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,12 +16,22 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-<div class="min-h-screen bg-gray-100">
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div id="app"></div>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
+<div class="min-h-screen bg-gray-50">
+    <div class="flex-1">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 pt-9">
+
+            <div id="app" class="w-full"></div>
         </div>
     </div>
 </div>
 </body>
 </html>
+@endsection

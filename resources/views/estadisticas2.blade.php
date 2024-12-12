@@ -1,6 +1,13 @@
 @extends('layout')
 @section('title','Estadísticas Página 2')
 @section('content')
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <div class="grid-container">
         <!-- Cada div representa un "item" dentro de la cuadrícula -->
         <div class="grid-item">Item 1</div>

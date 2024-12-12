@@ -1,6 +1,13 @@
 @extends('layout')
 @section('title','Dash')
 @section('content')
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <div class="dashboard">
         <div class="card bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
             <div class="text-center">

@@ -9,88 +9,113 @@ import StageDurationChart from "./charts/StageDurationChart.jsx";
 
 const Statistics = () => {
     return (
-        <div className="p-6 space-y-6">
-            <h1 className="text-2xl font-bold mb-6">Estadísticas del Sistema</h1>
-
-            {/* Revenue Chart - Full Width */}
-            <Card className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-semibold">Ingresos en el Tiempo</h2>
-                    <Button variant="outline" onClick={() => {}}>
-                        Exportar
-                    </Button>
+        // Remove the outer padding and use flex to fill available space
+        <div className="flex-1 w-full h-full overflow-auto">
+            {/* Content container with proper spacing */}
+            <div className="container mx-auto px-4 py-4 max-w-[1400px]">
+                {/* Page header */}
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-gray-800">Estadísticas del Sistema</h1>
                 </div>
-                <RevenueChart />
-            </Card>
 
-            {/* Person Type Distribution - Full Width */}
-            <Card className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-semibold">Distribución por tipo de persona</h2>
-                    <Button variant="outline" onClick={() => {}}>
-                        Exportar
-                    </Button>
+                {/* Charts grid with proper spacing */}
+                <div className="space-y-6">
+                    {/* Revenue Chart */}
+                    <Card className="shadow-sm">
+                        <div className="p-4 border-b">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-lg font-semibold text-gray-700">Ingresos en el Tiempo</h2>
+                                <Button variant="outline" size="sm">
+                                    Exportar
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="p-4">
+                            <RevenueChart />
+                        </div>
+                    </Card>
+
+                    {/* Person Type Distribution */}
+                    <Card className="shadow-sm">
+                        <div className="p-4 border-b">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-lg font-semibold text-gray-700">Distribución por tipo de persona</h2>
+                                <Button variant="outline" size="sm">
+                                    Exportar
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="p-4">
+                            <PersonTypeChart />
+                        </div>
+                    </Card>
+
+                    {/* Two column layout for smaller charts */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Document Type Distribution */}
+                        <Card className="shadow-sm">
+                            <div className="p-4 border-b">
+                                <div className="flex justify-between items-center">
+                                    <h2 className="text-lg font-semibold text-gray-700">Distribución por tipo de documento</h2>
+                                    <Button variant="outline" size="sm">
+                                        Exportar
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="p-4 h-[300px]">
+                                <DocumentTypeChart />
+                            </div>
+                        </Card>
+
+                        {/* Placeholder chart */}
+                        <Card className="shadow-sm">
+                            <div className="p-4 border-b">
+                                <div className="flex justify-between items-center">
+                                    <h2 className="text-lg font-semibold text-gray-700">Chart Title 2</h2>
+                                    <Button variant="outline" size="sm">
+                                        Exportar
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="p-4 h-[300px]">
+                                {/* Future chart */}
+                            </div>
+                        </Card>
+                    </div>
+
+                    {/* Departments Chart */}
+                    <Card className="shadow-sm">
+                        <div className="p-4 border-b">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-lg font-semibold text-gray-700">Transacciones por Departamento</h2>
+                                <Button variant="outline" size="sm">
+                                    Exportar
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="p-4 h-[500px]">
+                            <DepartmentsChart />
+                        </div>
+                    </Card>
+
+                    {/* Stage Duration Chart */}
+                    <Card className="shadow-sm">
+                        <div className="p-4 border-b">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-lg font-semibold text-gray-700">Análisis de duración de etapas</h2>
+                                <Button variant="outline" size="sm">
+                                    Exportar
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="p-4 overflow-x-auto">
+                            <div className="min-w-[800px] h-[600px]">
+                                <StageDurationChart />
+                            </div>
+                        </div>
+                    </Card>
                 </div>
-                <PersonTypeChart />
-            </Card>
-
-            {/* Grid Container for Two Half-Width Charts */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Document Type Distribution */}
-                <Card className="p-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold">Distribución por tipo de documento</h2>
-                        <Button variant="outline" onClick={() => {}}>
-                            Exportar
-                        </Button>
-                    </div>
-                    <div className="h-[300px]">
-                        <DocumentTypeChart />
-                    </div>
-                </Card>
-
-                {/* Placeholder for future chart */}
-                <Card className="p-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold">Chart Title 2</h2>
-                        <Button variant="outline" onClick={() => {}}>
-                            Exportar
-                        </Button>
-                    </div>
-                    <div className="h-[300px]">
-                        {/* Future chart will go here */}
-                    </div>
-                </Card>
             </div>
-
-            {/* Departments Chart - Full Width with larger height */}
-            <Card className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-semibold">Transacciones por Departamento</h2>
-                    <Button variant="outline" onClick={() => {}}>
-                        Exportar
-                    </Button>
-                </div>
-                <div className="h-[500px]"> {/* Increased height */}
-                    <DepartmentsChart />
-                </div>
-            </Card>
-
-            {/* Stage Duration Analysis Chart */}
-            <Card className="p-6 w-full">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-semibold">Análisis de duración de etapas</h2>
-                    <Button variant="outline" onClick={() => {}}>
-                        Exportar
-                    </Button>
-                </div>
-                <div className="w-full h-[600px] overflow-x-auto">
-                    <div className="min-w-[800px] h-full">
-                        <StageDurationChart />
-                    </div>
-                </div>
-            </Card>
-
         </div>
     );
 };
