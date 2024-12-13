@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\Api\ChartDataController;
+use App\Http\Controllers\ReactDashboardController;
 use App\Services\PdfExportService;
 use Illuminate\Support\Facades\Route;
 
@@ -11,6 +12,10 @@ Route::post('/chart-data/person-type', [ChartDataController::class, 'getPersonTy
 Route::post('/chart-data/document-type', [ChartDataController::class, 'getDocumentTypeData']);
 Route::post('/chart-data/department', [ChartDataController::class, 'getDepartmentData']);
 Route::post('/chart-data/stage-duration', [ChartDataController::class, 'getStageDurationData']);
+
+//Dashboard routes
+Route::get('/dashboard/stats', [ReactDashboardController::class, 'getStats']);
+Route::post('/dashboard/transactions', [ReactDashboardController::class, 'getTransactions']);
 
 
 

@@ -255,4 +255,157 @@ class ReactTransactionRepo
         }
     }
 
+    /**
+     * Get transactions count for a specific period
+     */
+    public function getTransactionsCount($period = 'today')
+    {
+        try {
+            $query = DB::table('transactions');
+
+            if ($period === 'today') {
+                $query->whereDate('created_at', today());
+            }
+
+            return $query->count();
+        } catch (\Exception $e) {
+            Log::error('Error getting transactions count', [
+                'error' => $e->getMessage(),
+                'period' => $period
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Calculate percentage change in transactions compared to previous day
+     */
+    public function getTransactionsChange()
+    {
+        try {
+            $today = $this->getTransactionsCount('today');
+            $yesterday = DB::table('transactions')
+                ->whereDate('created_at', today()->subDay())
+                ->count();
+
+            if ($yesterday === 0) return 0;
+            return round((($today - $yesterday) / $yesterday) * 100, 1);
+        } catch (\Exception $e) {
+            Log::error('Error calculating transactions change', [
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
+
+
+    public function getProcessedDocumentsCount()
+    {
+        try {
+            return DB::table('transactions')
+                ->where('status', 'completado')
+                ->whereMonth('created_at', now()->month)
+                ->count();
+        } catch (\Exception $e) {
+            Log::error('Error getting processed documents count', [
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
+
+
+    public function getProcessedDocumentsChange()
+    {
+        try {
+            $today = DB::table('transactions')
+                ->where('status', 'completado')
+                ->whereDate('created_at', today())
+                ->count();
+
+            $yesterday = DB::table('transactions')
+                ->where('status', 'completado')
+                ->whereDate('created_at', today()->subDay())
+                ->count();
+
+            if ($yesterday === 0) return 0;
+            return round((($today - $yesterday) / $yesterday) * 100, 1);
+        } catch (\Exception $e) {
+            Log::error('Error calculating processed documents change', [
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
+
+
+    public function getRevenueToday()
+    {
+        try {
+            return DB::table('transactions')
+                ->whereDate('created_at', today())
+                ->where('status', 'completado')
+                ->sum(DB::raw('CAST(full_json#>\'{tramite,datos,5,total_a_pagar}\' AS DECIMAL(10,2))'));
+        } catch (\Exception $e) {
+            Log::error('Error getting today revenue', [
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
+
+
+    public function getRevenueChange()
+    {
+        try {
+            $today = $this->getRevenueToday();
+
+            $yesterday = DB::table('transactions')
+                ->whereDate('created_at', today()->subDay())
+                ->where('status', 'completado')
+                ->sum(DB::raw('CAST(full_json#>\'{tramite,datos,5,total_a_pagar}\' AS DECIMAL(10,2))'));
+
+            if ($yesterday === 0) return 0;
+            return round((($today - $yesterday) / $yesterday) * 100, 1);
+        } catch (\Exception $e) {
+            Log::error('Error calculating revenue change', [
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
+
+
+    public function getTransactionsPerDay($startDate = null, $endDate = null)
+    {
+        try {
+            $query = DB::table('transactions')
+                ->select(
+                    DB::raw('DATE(created_at) as date'),
+                    DB::raw('COUNT(*) as total')
+                );
+
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [
+                    Carbon::parse($startDate)->startOfDay(),
+                    Carbon::parse($endDate)->endOfDay()
+                ]);
+            }
+
+            return $query->groupBy('date')
+                ->orderBy('date', 'asc')
+                ->get();
+        } catch (\Exception $e) {
+            Log::error('Error getting transactions per day', [
+                'error' => $e->getMessage(),
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+            throw $e;
+        }
+    }
+
+
+
+
 }
