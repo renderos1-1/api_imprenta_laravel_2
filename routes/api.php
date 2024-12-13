@@ -16,7 +16,8 @@ Route::post('/chart-data/stage-duration', [ChartDataController::class, 'getStage
 
 //Export Routes
 Route::post('/export/{type}', [ExportController::class, 'export'])
-    ->name('export.chart');
+    ->name('export.chart')
+    ->where('type', 'revenue|person-type');
 
 
 // Add a test route to verify API is working

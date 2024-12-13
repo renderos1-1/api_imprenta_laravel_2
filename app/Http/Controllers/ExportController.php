@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\Export\RevenueExportService;
+use App\Services\Export\PersonTypeExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -11,6 +12,7 @@ class ExportController extends Controller
 {
     protected array $exportServices = [
         'revenue' => RevenueExportService::class,
+        'person-type' => PersonTypeExportService::class,
     ];
 
     public function export(Request $request, string $type)
@@ -28,18 +30,18 @@ class ExportController extends Controller
                 'format' => $request->format,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
-                'all_data' => $request->all() // Debug log
+                'all_data' => $request->all()
             ]);
 
             if (!array_key_exists($type, $this->exportServices)) {
-                throw new \Exception('Invalid export type: ' . $type);
+                throw new Exception('Invalid export type: ' . $type);
             }
 
             $serviceClass = $this->exportServices[$type];
             $service = app($serviceClass);
 
             $result = $service->export(
-                $validated['format'], // Use validated data
+                $validated['format'],
                 $validated['start_date'],
                 $validated['end_date']
             );

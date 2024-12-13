@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\Export\PersonTypeExportService;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Export\RevenueExportService;
 use App\Repositories\ReactTransactionRepo;
@@ -16,6 +17,13 @@ class ExportServiceProvider extends ServiceProvider
                 $app->make(ReactTransactionRepo::class)
             );
         });
+
+        $this->app->bind(PersonTypeExportService::class, function ($app) {
+            return new PersonTypeExportService(
+                $app->make(ReactTransactionRepo::class)
+            );
+        });
+
     }
 
 
