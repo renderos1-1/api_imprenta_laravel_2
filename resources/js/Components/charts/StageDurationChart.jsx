@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { Alert } from "@/components/ui/alert";
+import ExportButton from '../ui/ExportButton';
 
 const StageDurationChart = () => {
     const [data, setData] = useState([]);
@@ -40,6 +42,9 @@ const StageDurationChart = () => {
 
     useEffect(() => {
         fetchData();
+        // Set up auto-refresh interval
+        const interval = setInterval(fetchData, 60000); // Refresh every minute
+        return () => clearInterval(interval);
     }, [dateRange]);
 
     const handleDateChange = (e) => {
@@ -52,11 +57,15 @@ const StageDurationChart = () => {
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
+            const duration = payload[0].value;
+            const hours = Math.floor(duration / 60);
+            const minutes = Math.round(duration % 60);
+
             return (
                 <div className="bg-white p-4 shadow-lg rounded-lg border">
                     <p className="font-semibold text-gray-900">{label}</p>
                     <p className="text-gray-600">
-                        Duración Promedio: {payload[0].value.toFixed(2)} minutos
+                        Duración Promedio: {hours > 0 ? `${hours}h ` : ''}{minutes}m
                     </p>
                 </div>
             );
@@ -74,49 +83,73 @@ const StageDurationChart = () => {
 
     if (error) {
         return (
-            <div className="text-red-500 p-4 text-center">
+            <Alert variant="destructive" className="mb-4">
                 {error}
+            </Alert>
+        );
+    }
+
+    if (!data.length) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <p className="text-gray-500">No hay datos disponibles para el período seleccionado</p>
             </div>
         );
     }
 
     return (
-        <div className="w-full">
-            <div className="mb-4 flex gap-4">
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Desde:</label>
-                    <input
-                        type="date"
-                        name="start_date"
-                        value={dateRange.start_date}
-                        onChange={handleDateChange}
-                        className="border rounded px-2 py-1 text-sm"
-                    />
+        <div className="w-full space-y-4">
+            <div className="flex justify-between items-center">
+                <div className="flex gap-4">
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium">Desde:</label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            value={dateRange.start_date}
+                            onChange={handleDateChange}
+                            className="border rounded px-2 py-1 text-sm"
+                        />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium">Hasta:</label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value={dateRange.end_date}
+                            onChange={handleDateChange}
+                            className="border rounded px-2 py-1 text-sm"
+                        />
+                    </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Hasta:</label>
-                    <input
-                        type="date"
-                        name="end_date"
-                        value={dateRange.end_date}
-                        onChange={handleDateChange}
-                        className="border rounded px-2 py-1 text-sm"
-                    />
-                </div>
+                <ExportButton
+                    chartType="stage-duration"
+                    startDate={dateRange.start_date}
+                    endDate={dateRange.end_date}
+                />
             </div>
 
-            <div className="h-[600px]"> {/* Increased height for better visibility */}
+            <div className="h-[600px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         data={data}
-                        layout="vertical" // This makes the bars horizontal
-                        margin={{ top: 20, right: 30, left: 200, bottom: 20 }} // Increased left margin for labels
+                        layout="vertical"
+                        margin={{ top: 20, right: 30, left: 220, bottom: 40 }}
                     >
-                        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                        <CartesianGrid
+                            strokeDasharray="3 3"
+                            horizontal={false}
+                            stroke="#E5E7EB"
+                        />
                         <XAxis
                             type="number"
+                            tickFormatter={(value) => {
+                                const hours = Math.floor(value / 60);
+                                const minutes = Math.round(value % 60);
+                                return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+                            }}
                             label={{
-                                value: 'Duración Promedio (minutos)',
+                                value: 'Duración Promedio',
                                 position: 'bottom',
                                 offset: 0
                             }}
@@ -124,32 +157,26 @@ const StageDurationChart = () => {
                         <YAxis
                             dataKey="name"
                             type="category"
-                            width={180} // Fixed width for stage names
-                            tick={{ fontSize: 12 }}
-                        />
-                        <Tooltip
-                            content={({ active, payload, label }) => {
-                                if (active && payload && payload.length) {
-                                    return (
-                                        <div className="bg-white p-4 shadow-lg rounded-lg border">
-                                            <p className="font-semibold text-gray-900">{label}</p>
-                                            <p className="text-gray-600">
-                                                Duración Promedio: {payload[0].value.toFixed(2)} minutos
-                                            </p>
-                                        </div>
-                                    );
-                                }
-                                return null;
+                            width={200}
+                            tick={{
+                                fontSize: 12,
+                                fill: '#4B5563',
+                                textAnchor: 'end'
                             }}
                         />
+                        <Tooltip content={<CustomTooltip />} />
                         <Bar
                             dataKey="duration"
                             fill="#4f46e5"
                             name="Duración Promedio"
-                            radius={[0, 4, 4, 0]} // Rounded corners on the right side
+                            radius={[0, 4, 4, 0]}
                         />
                     </BarChart>
                 </ResponsiveContainer>
+            </div>
+
+            <div className="text-sm text-gray-500 text-center">
+                * Los tiempos mostrados son promedios basados en las transacciones completadas
             </div>
         </div>
     );

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Export\DepartmentExportService;
+use App\Services\Export\DocumentTypeExportService;
 use App\Services\Export\RevenueExportService;
 use App\Services\Export\PersonTypeExportService;
+use App\Services\Export\StageDurationExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -13,6 +16,11 @@ class ExportController extends Controller
     protected array $exportServices = [
         'revenue' => RevenueExportService::class,
         'person-type' => PersonTypeExportService::class,
+        'document-type' => DocumentTypeExportService::class,
+        'department' => DepartmentExportService::class,
+        'stage-duration' => StageDurationExportService::class,
+
+
     ];
 
     public function export(Request $request, string $type)

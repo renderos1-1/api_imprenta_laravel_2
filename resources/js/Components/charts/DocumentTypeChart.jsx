@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from 'recharts';
+import { Alert } from "@/components/ui/alert";
+import ExportButton from '../ui/ExportButton'; // Updated import
 
 const DocumentTypeChart = () => {
     // Define colors for each document type
@@ -64,7 +66,6 @@ const DocumentTypeChart = () => {
             payload, value, percentage
         } = props;
 
-        // Get color based on document type
         const color = COLORS[payload.document_type] || '#94a3b8';
 
         return (
@@ -110,35 +111,40 @@ const DocumentTypeChart = () => {
 
     if (error) {
         return (
-            <div className="text-red-500 p-4 text-center">
-                {error}
-            </div>
+            <Alert variant="destructive">{error}</Alert>
         );
     }
 
     return (
         <div className="w-full">
-            <div className="mb-4 flex gap-4">
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Desde:</label>
-                    <input
-                        type="date"
-                        name="start_date"
-                        value={dateRange.start_date}
-                        onChange={handleDateChange}
-                        className="border rounded px-2 py-1 text-sm"
-                    />
+            <div className="mb-4 flex justify-between">
+                <div className="flex gap-4">
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium">Desde:</label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            value={dateRange.start_date}
+                            onChange={handleDateChange}
+                            className="border rounded px-2 py-1 text-sm"
+                        />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium">Hasta:</label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value={dateRange.end_date}
+                            onChange={handleDateChange}
+                            className="border rounded px-2 py-1 text-sm"
+                        />
+                    </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Hasta:</label>
-                    <input
-                        type="date"
-                        name="end_date"
-                        value={dateRange.end_date}
-                        onChange={handleDateChange}
-                        className="border rounded px-2 py-1 text-sm"
-                    />
-                </div>
+                <ExportButton
+                    chartType="document-type"
+                    startDate={dateRange.start_date}
+                    endDate={dateRange.end_date}
+                />
             </div>
 
             <div className="h-[300px]">

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Alert } from "@/components/ui/alert";
+import ExportButton from '../ui/ExportButton';
 
 const DepartmentsChart = () => {
     const [data, setData] = useState([]);
@@ -30,7 +32,6 @@ const DepartmentsChart = () => {
             }
 
             const jsonData = await response.json();
-            console.log('Department Data:', jsonData); // Debug log
             setData(jsonData);
         } catch (err) {
             setError(err.message);
@@ -52,7 +53,6 @@ const DepartmentsChart = () => {
         }));
     };
 
-    // Custom tooltip
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
             return (
@@ -77,9 +77,7 @@ const DepartmentsChart = () => {
 
     if (error) {
         return (
-            <div className="text-red-500 p-4 text-center">
-                {error}
-            </div>
+            <Alert variant="destructive">{error}</Alert>
         );
     }
 
@@ -93,27 +91,34 @@ const DepartmentsChart = () => {
 
     return (
         <div className="w-full h-full">
-            <div className="mb-4 flex gap-4">
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Desde:</label>
-                    <input
-                        type="date"
-                        name="start_date"
-                        value={dateRange.start_date}
-                        onChange={handleDateChange}
-                        className="border rounded px-2 py-1 text-sm"
-                    />
+            <div className="mb-4 flex justify-between">
+                <div className="flex gap-4">
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium">Desde:</label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            value={dateRange.start_date}
+                            onChange={handleDateChange}
+                            className="border rounded px-2 py-1 text-sm"
+                        />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium">Hasta:</label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value={dateRange.end_date}
+                            onChange={handleDateChange}
+                            className="border rounded px-2 py-1 text-sm"
+                        />
+                    </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Hasta:</label>
-                    <input
-                        type="date"
-                        name="end_date"
-                        value={dateRange.end_date}
-                        onChange={handleDateChange}
-                        className="border rounded px-2 py-1 text-sm"
-                    />
-                </div>
+                <ExportButton
+                    chartType="department"
+                    startDate={dateRange.start_date}
+                    endDate={dateRange.end_date}
+                />
             </div>
 
             <div style={{ width: '100%', height: 'calc(100% - 60px)' }}>
