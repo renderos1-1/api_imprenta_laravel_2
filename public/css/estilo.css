@@ -16,9 +16,10 @@ header {
     display: flex;
     position: absolute;
     flex-direction: row;
-    gap: 100px;
+    gap: 120px;
     align-items: center;
     padding-left: 40px;
+    font-size: 28px;
 }
 
 

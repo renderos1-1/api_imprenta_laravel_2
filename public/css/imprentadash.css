@@ -46,7 +46,7 @@ body {
 
 .chart-container {
     background: white;
-    border-radius: 8px;
+    border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     height: 400px; /* Fixed height for the chart */
     margin-top: 20px;
@@ -65,7 +65,7 @@ body {
 .chartoso {
     background: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    border-radius: 12px;
     text-align: center;
     margin-top: 20px;
     max-width: 1100px;
@@ -86,7 +86,7 @@ body {
     box-shadow: 5px 0 10px -5px #2a4d69;
     z-index: 1;
     height: auto; /* Cambiar de 100vh a auto */
-    margin-top: 128px;
+    margin-top: 131px;
     position: absolute;
     min-height: 100vh; /* Asegura que al menos sea del tamaño de la ventana */
 }

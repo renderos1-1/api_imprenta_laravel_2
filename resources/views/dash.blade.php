@@ -9,7 +9,7 @@
     <br>
     <br>
     <div class="dashboard">
-        <div class="card bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+        <div class="card bg-white overflow-hidden shadow-sm sm:rounded-xl p-6">
             <div class="text-center">
                 <h3 class="text-xl font-semibold text-gray-900 mb-2">
                     Transacciones de Hoy
@@ -24,7 +24,7 @@
                 </p>
             </div>
         </div>
-        <div class="card bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+        <div class="card bg-white overflow-hidden shadow-sm sm:rounded-xl p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Ingresos Diarios</h3>
             <br>
             <p class="text-3xl font-bold text-indigo-600" style="color: green">${{ $formattedTodayRevenue }}</p>

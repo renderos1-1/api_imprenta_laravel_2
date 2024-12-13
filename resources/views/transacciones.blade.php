@@ -13,7 +13,6 @@
     <div class="contenedor">
         <h1>Buscar en la Base de Datos</h1>
         <br>
-        <br>
 
         {{-- Mensaje informativo --}}
         @if(!request('search_dui') && !request('search_name'))

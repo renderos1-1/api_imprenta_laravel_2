@@ -4,25 +4,13 @@
 @section('title', 'Estadisticas')
 
 @section('content')
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Estadísticas</title>
-
-    @viteReactRefresh
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body>
-<br>
-<br>
-<br>
-<br>
-<br>
 
 
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <div class="min-h-screen  mr-60 ml-80 my-20 bg-gray-50 shadow-xl rounded-xl">
     <div class="flex-1">
@@ -32,6 +20,5 @@
         </div>
     </div>
 </div>
-</body>
-</html>
+
 @endsection
