@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import ExportButton from '../ui/ExportButton'; // Updated import
 
 const PersonTypeChart = () => {
     const [data, setData] = useState([]);
@@ -91,28 +92,36 @@ const PersonTypeChart = () => {
 
     return (
         <div className="w-full">
-            <div className="mb-4 flex gap-4">
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Desde:</label>
-                    <input
-                        type="date"
-                        name="start_date"
-                        value={dateRange.start_date}
-                        onChange={handleDateChange}
-                        className="border rounded px-2 py-1 text-sm"
-                    />
+            <div className="flex justify-between items-center mb-4">
+                <div className="flex gap-4">
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium">Desde:</label>
+                        <input
+                            type="date"
+                            name="start_date"
+                            value={dateRange.start_date}
+                            onChange={handleDateChange}
+                            className="border rounded px-2 py-1 text-sm"
+                        />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium">Hasta:</label>
+                        <input
+                            type="date"
+                            name="end_date"
+                            value={dateRange.end_date}
+                            onChange={handleDateChange}
+                            className="border rounded px-2 py-1 text-sm"
+                        />
+                    </div>
+                    {isLoading && <span className="text-sm text-gray-500">Cargando...</span>}
                 </div>
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Hasta:</label>
-                    <input
-                        type="date"
-                        name="end_date"
-                        value={dateRange.end_date}
-                        onChange={handleDateChange}
-                        className="border rounded px-2 py-1 text-sm"
-                    />
-                </div>
-                {isLoading && <span className="text-sm text-gray-500">Cargando...</span>}
+
+                <ExportButton
+                    chartType="person-type"
+                    startDate={dateRange.start_date}
+                    endDate={dateRange.end_date}
+                />
             </div>
 
             <div className="h-[400px]">

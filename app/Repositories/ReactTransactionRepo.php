@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -198,5 +199,60 @@ class ReactTransactionRepo
         })->values();
     }
 
+    public function getDetailedPersonTypeData($startDate = null, $endDate = null)
+    {
+        try {
+            $query = DB::table('transactions')
+                ->select([
+                    'created_at',
+                    'id',
+                    'document_type',
+                    'person_type',
+                    'document_number',
+                    'status',
+                    'full_json'
+                ]);
+
+            if ($startDate && $endDate) {
+                $query->whereBetween('created_at', [
+                    Carbon::parse($startDate)->startOfDay(),
+                    Carbon::parse($endDate)->endOfDay()
+                ]);
+            }
+
+            Log::info('Executing person type query', [
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+
+            $result = $query->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function($item) {
+                    $jsonData = json_decode($item->full_json);
+                    return (object)[
+                        'created_at' => $item->created_at,
+                        'transaction_id' => $item->id,
+                        'document_type' => $item->document_type,
+                        'document_number' => $item->document_number,
+                        'person_type' => $item->person_type,
+                        'status' => $item->status,
+                        'tramite_id' => $jsonData->tramite->id ?? null
+                    ];
+                });
+
+            Log::info('Query result count', [
+                'count' => $result->count()
+            ]);
+
+            return $result;
+
+        } catch (\Exception $e) {
+            Log::error('Error getting detailed person type data', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
 
 }

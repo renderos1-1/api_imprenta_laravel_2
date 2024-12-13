@@ -22,7 +22,6 @@ const ExportButton = ({
                       }) => {
     const [isExporting, setIsExporting] = useState(false);
 
-    // Map format to file extension
     const getFileExtension = (format) => {
         const extensions = {
             'pdf': 'pdf',
@@ -35,7 +34,11 @@ const ExportButton = ({
     const handleExport = async (format) => {
         try {
             setIsExporting(true);
-            const response = await fetch(`/api/export/revenue`, {
+
+            // Determine the endpoint based on chartType
+            const endpoint = `/api/export/${chartType}`;
+
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,8 +61,7 @@ const ExportButton = ({
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            // Use the correct file extension
-            a.download = `revenue_${startDate}_${endDate}.${getFileExtension(format)}`;
+            a.download = `${chartType}_${startDate}_${endDate}.${getFileExtension(format)}`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
@@ -67,6 +69,7 @@ const ExportButton = ({
 
         } catch (error) {
             console.error('Export error:', error);
+            // You might want to add a toast notification here
         } finally {
             setIsExporting(false);
         }
