@@ -8,8 +8,6 @@
     <br>
     <br>
     <br>
-    <br>
-    <br>
     <div class="contenedor">
         <h1>Buscar en la Base de Datos</h1>
         <br>
