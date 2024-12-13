@@ -9,111 +9,111 @@ import StageDurationChart from "./charts/StageDurationChart.jsx";
 
 const Statistics = () => {
     return (
-        // Remove the outer padding and use flex to fill available space
-        <div className="flex-1 w-full h-full overflow-auto">
-            {/* Content container with proper spacing */}
-            <div className="container mx-auto px-4 py-4 max-w-[1400px]">
-                {/* Page header */}
-                <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-gray-800">Estadísticas del Sistema</h1>
-                </div>
+        // Main container that takes full width and height
+        <div className="flex flex-col w-full min-h-screen bg-gray-50">
+            {/* Page header fixed at top */}
 
-                {/* Charts grid with proper spacing */}
-                <div className="space-y-6">
-                    {/* Revenue Chart */}
-                    <Card className="shadow-sm">
-                        <div className="p-4 border-b">
-                            <div className="flex justify-between items-center">
-                                <h2 className="text-lg font-semibold text-gray-700">Ingresos en el Tiempo</h2>
-                                <Button variant="outline" size="sm">
-                                    Exportar
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="p-4">
-                            <RevenueChart />
-                        </div>
-                    </Card>
 
-                    {/* Person Type Distribution */}
-                    <Card className="shadow-sm">
-                        <div className="p-4 border-b">
-                            <div className="flex justify-between items-center">
-                                <h2 className="text-lg font-semibold text-gray-700">Distribución por tipo de persona</h2>
-                                <Button variant="outline" size="sm">
-                                    Exportar
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="p-4">
-                            <PersonTypeChart />
-                        </div>
-                    </Card>
-
-                    {/* Two column layout for smaller charts */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Document Type Distribution */}
+            {/* Scrollable content area */}
+            <div className="flex-1 overflow-auto">
+                <div className="container mx-auto px-6 py-6">
+                    {/* Charts grid */}
+                    <div className="space-y-6">
+                        {/* Revenue Chart */}
                         <Card className="shadow-sm">
                             <div className="p-4 border-b">
                                 <div className="flex justify-between items-center">
-                                    <h2 className="text-lg font-semibold text-gray-700">Distribución por tipo de documento</h2>
+                                    <h2 className="text-lg font-semibold text-gray-700">Ingresos en el Tiempo</h2>
                                     <Button variant="outline" size="sm">
                                         Exportar
                                     </Button>
                                 </div>
                             </div>
-                            <div className="p-4 h-[300px]">
-                                <DocumentTypeChart />
+                            <div className="p-4">
+                                <RevenueChart />
                             </div>
                         </Card>
 
-                        {/* Placeholder chart */}
+                        {/* Person Type Distribution */}
                         <Card className="shadow-sm">
                             <div className="p-4 border-b">
                                 <div className="flex justify-between items-center">
-                                    <h2 className="text-lg font-semibold text-gray-700">Chart Title 2</h2>
+                                    <h2 className="text-lg font-semibold text-gray-700">Distribución por tipo de persona</h2>
                                     <Button variant="outline" size="sm">
                                         Exportar
                                     </Button>
                                 </div>
                             </div>
-                            <div className="p-4 h-[300px]">
-                                {/* Future chart */}
+                            <div className="p-4">
+                                <PersonTypeChart />
+                            </div>
+                        </Card>
+
+                        {/* Two column layout for smaller charts */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Document Type Distribution */}
+                            <Card className="shadow-sm">
+                                <div className="p-4 border-b">
+                                    <div className="flex justify-between items-center">
+                                        <h2 className="text-lg font-semibold text-gray-700">Distribución por tipo de documento</h2>
+                                        <Button variant="outline" size="sm">
+                                            Exportar
+                                        </Button>
+                                    </div>
+                                </div>
+                                <div className="p-4 h-[300px]">
+                                    <DocumentTypeChart />
+                                </div>
+                            </Card>
+
+                            {/* Placeholder chart */}
+                            <Card className="shadow-sm">
+                                <div className="p-4 border-b">
+                                    <div className="flex justify-between items-center">
+                                        <h2 className="text-lg font-semibold text-gray-700">Chart Title 2</h2>
+                                        <Button variant="outline" size="sm">
+                                            Exportar
+                                        </Button>
+                                    </div>
+                                </div>
+                                <div className="p-4 h-[300px]">
+                                    {/* Future chart */}
+                                </div>
+                            </Card>
+                        </div>
+
+                        {/* Departments Chart */}
+                        <Card className="shadow-sm">
+                            <div className="p-4 border-b">
+                                <div className="flex justify-between items-center">
+                                    <h2 className="text-lg font-semibold text-gray-700">Transacciones por Departamento</h2>
+                                    <Button variant="outline" size="sm">
+                                        Exportar
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="p-4 h-[500px]">
+                                <DepartmentsChart />
+                            </div>
+                        </Card>
+
+                        {/* Stage Duration Chart */}
+                        <Card className="shadow-sm">
+                            <div className="p-4 border-b">
+                                <div className="flex justify-between items-center">
+                                    <h2 className="text-lg font-semibold text-gray-700">Análisis de duración de etapas</h2>
+                                    <Button variant="outline" size="sm">
+                                        Exportar
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="p-4 overflow-x-auto">
+                                <div className="min-w-[800px] h-[600px]">
+                                    <StageDurationChart />
+                                </div>
                             </div>
                         </Card>
                     </div>
-
-                    {/* Departments Chart */}
-                    <Card className="shadow-sm">
-                        <div className="p-4 border-b">
-                            <div className="flex justify-between items-center">
-                                <h2 className="text-lg font-semibold text-gray-700">Transacciones por Departamento</h2>
-                                <Button variant="outline" size="sm">
-                                    Exportar
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="p-4 h-[500px]">
-                            <DepartmentsChart />
-                        </div>
-                    </Card>
-
-                    {/* Stage Duration Chart */}
-                    <Card className="shadow-sm">
-                        <div className="p-4 border-b">
-                            <div className="flex justify-between items-center">
-                                <h2 className="text-lg font-semibold text-gray-700">Análisis de duración de etapas</h2>
-                                <Button variant="outline" size="sm">
-                                    Exportar
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="p-4 overflow-x-auto">
-                            <div className="min-w-[800px] h-[600px]">
-                                <StageDurationChart />
-                            </div>
-                        </div>
-                    </Card>
                 </div>
             </div>
         </div>
