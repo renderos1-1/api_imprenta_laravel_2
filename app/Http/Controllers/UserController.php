@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\BladePermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -17,8 +18,13 @@ class UserController extends Controller
     {
         $users = User::with('role')->get(); // Load all users with their roles
         $roles = Role::all(); // Get all roles
+        $bladePermissions = BladePermission::all();
 
-        return view('adminuser', compact('users', 'roles'));
+        return view('adminuser', [
+            'users' => User::with('role')->get(),
+            'roles' => Role::all(),
+            'bladePermissions' => BladePermission::all()
+        ]);
     }
 
     /**
@@ -90,4 +96,6 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Usuario eliminado exitosamente']);
     }
+
+
 }

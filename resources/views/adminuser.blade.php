@@ -12,6 +12,7 @@
         <div class="user-management">
             <div class="actions-bar">
                 <input type="text" id="searchInput" placeholder="Buscar usuarios..." class="search-bar">
+                <button class="add-user-btn" onclick="openRoleModal()">+ Nuevo Rol</button>
                 <button class="add-user-btn" onclick="openUserModal()">+ Nuevo Usuario</button>
             </div>
 
@@ -42,6 +43,48 @@
             </table>
         </div>
     </main>
+
+    <!-- Role Modal -->
+    <div class="modal" id="roleModal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeRoleModal()">&times;</span>
+            <h2 id="roleModalTitle">Nuevo Rol</h2>
+            <br>
+            <form id="roleForm" onsubmit="saveRole(event)">
+                @csrf
+                <input type="hidden" id="roleId">
+
+                <div class="form-group">
+                    <label for="role_name">Nombre del Rol</label>
+                    <input type="text" id="role_name" name="role_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="role_description">Descripción</label>
+                    <textarea id="role_description" name="role_description" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Permisos de Acceso</label>
+                    <div class="permissions-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
+                        @foreach($bladePermissions as $permission)
+                            <div class="permission-item">
+                                <label>
+                                    <input type="checkbox" name="permissions[]" value="{{ $permission->id }}">
+                                    {{ $permission->name }}
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="rounded-full border-2">Guardar </button>
+                    <button type="button" class="rounded-full border-2" onclick="closeRoleModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- User Modal -->
     <div class="modal" id="userModal" style="display: none;">
@@ -86,8 +129,8 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Cancelar</button>
+                    <button type="submit" class="rounded-full border-2">Guardar</button>
+                    <button type="button" class="rounded-full border-2" onclick="closeUserModal()">Cancelar</button>
                 </div>
             </form>
         </div>
@@ -113,6 +156,11 @@
             border: 1px solid #888;
             width: 80%;
             max-width: 500px;
+            border-radius: 8px;
+        }
+
+        #role_description {
+            border: 1px solid #ddd;
             border-radius: 8px;
         }
 
@@ -143,6 +191,7 @@
     </style>
 
     <script>
+
         // Search functionality
         document.getElementById('searchInput').addEventListener('keyup', function(e) {
             const searchText = e.target.value.toLowerCase();
@@ -153,6 +202,86 @@
                 row.style.display = text.includes(searchText) ? '' : 'none';
             });
         });
+
+        // Role Modal functions
+        function openRoleModal(role = null) {
+            const modal = document.getElementById('roleModal');
+            const form = document.getElementById('roleForm');
+            const modalTitle = document.getElementById('roleModalTitle');
+
+            form.reset();
+
+            if (role) {
+                modalTitle.textContent = 'Editar Rol';
+                document.getElementById('roleId').value = role.id;
+                document.getElementById('role_name').value = role.name;
+                document.getElementById('role_description').value = role.description;
+
+                // Check the permissions
+                const permissions = role.permissions || [];
+                permissions.forEach(permissionId => {
+                    const checkbox = form.querySelector(`input[value="${permissionId}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            } else {
+                modalTitle.textContent = 'Nuevo Rol';
+                document.getElementById('roleId').value = '';
+            }
+
+            modal.style.display = 'block';
+        }
+
+        function closeRoleModal() {
+            document.getElementById('roleModal').style.display = 'none';
+        }
+
+        // Save role function
+        async function saveRole(event) {
+            event.preventDefault();
+
+            const roleId = document.getElementById('roleId').value;
+            const isEdit = roleId !== '';
+            const url = isEdit ? `/roles/${roleId}` : '/roles';
+            const method = isEdit ? 'PUT' : 'POST';
+
+            const formData = {
+                name: document.getElementById('role_name').value,
+                description: document.getElementById('role_description').value,
+                permissions: Array.from(document.querySelectorAll('input[name="permissions[]"]:checked'))
+                    .map(cb => cb.value)
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: data.message,
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    throw new Error(data.message || 'Error al procesar la solicitud');
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error',
+                    text: error.message,
+                    icon: 'error'
+                });
+            }
+        }
 
         // Modal functions
         function openUserModal(user = null) {
@@ -294,6 +423,8 @@
                 e.target.value = value;
             });
         });
+
+
     </script>
 
     <!-- SweetAlert2 CDN -->
