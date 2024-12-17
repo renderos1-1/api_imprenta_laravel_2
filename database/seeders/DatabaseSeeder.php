@@ -13,7 +13,8 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,    // First, create permissions
             RoleSeeder::class,          // Then create roles
             RolePermissionSeeder::class, // Then assign permissions to roles
-            UserSeeder::class,          // Finally, create users
+            UserSeeder::class,
+            BladePermissionSeeder::class,
         ]);
     }
 }

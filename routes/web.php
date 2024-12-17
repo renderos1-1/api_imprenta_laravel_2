@@ -7,6 +7,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserLogController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +66,8 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/', [ProfileController::class, 'update'])->name('update');
         Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
     });
+
+    Route::resource('roles', RoleController::class);
 });
 
 /*
