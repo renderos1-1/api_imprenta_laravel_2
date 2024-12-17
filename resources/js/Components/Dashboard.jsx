@@ -16,14 +16,11 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 setIsLoading(true);
-
-                // Fetch stats
                 const statsResponse = await fetch('/api/dashboard/stats');
                 if (!statsResponse.ok) throw new Error('Failed to fetch stats');
                 const statsData = await statsResponse.json();
                 setStats(statsData);
 
-                // Fetch transactions for chart
                 const transactionsResponse = await fetch('/api/dashboard/transactions', {
                     method: 'POST',
                     headers: {
@@ -46,7 +43,6 @@ const Dashboard = () => {
         };
 
         fetchData();
-        // Auto-refresh every minute
         const interval = setInterval(fetchData, 60000);
         return () => clearInterval(interval);
     }, []);
@@ -74,70 +70,82 @@ const Dashboard = () => {
     );
 
     if (isLoading) {
-        return <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-        </div>;
+        return (
+            <div className="min-h-screen pl-64 pt-16">
+                <div className="flex items-center justify-center h-64">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div className="bg-white rounded-lg shadow-sm m-4 p-6 mt-32">
-            <div className="max-w-7xl mx-auto space-y-6">
-                <h2 className="text-2xl font-bold">Buenos días, Admin</h2>
-                <p className="text-gray-500">Aquí está el resumen de hoy</p>
+        <main className="min-h-screen bg-gray-50 ml-5 mt-16">
+            {/* Main content container with proper spacing for sidebar and header */}
+            <div className="pl-64 pt-16"> {/* 16rem for sidebar (pl-64) and 4rem for header (pt-16) */}
+                <div className="p-8 max-w-7xl mx-auto  ">
+                    {/* Header Section */}
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-gray-800">Buenos días,</h2>
+                        <p className="text-gray-500 mt-1">Aquí está el resumen de hoy</p>
+                    </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <StatCard
-                        title="Transacciones Hoy"
-                        value={stats.transactionsToday.value}
-                        change={stats.transactionsToday.change}
-                        icon={Activity}
-                    />
-                    <StatCard
-                        title="Documentos Procesados"
-                        value={stats.processedDocs.value}
-                        change={stats.processedDocs.change}
-                        icon={FileText}
-                    />
-                    <StatCard
-                        title="Ingresos Hoy"
-                        value={stats.revenue.value}
-                        change={stats.revenue.change}
-                        icon={TrendingUp}
-                    />
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <StatCard
+                            title="Transacciones Hoy"
+                            value={stats.transactionsToday.value}
+                            change={stats.transactionsToday.change}
+                            icon={Activity}
+                        />
+                        <StatCard
+                            title="Documentos Procesados"
+                            value={stats.processedDocs.value}
+                            change={stats.processedDocs.change}
+                            icon={FileText}
+                        />
+                        <StatCard
+                            title="Ingresos Hoy"
+                            value={stats.revenue.value}
+                            change={stats.revenue.change}
+                            icon={TrendingUp}
+                        />
+                    </div>
+
+                    {/* Chart Card */}
+                    <Card className="p-6">
+                        <div className="mb-4">
+                            <h3 className="text-lg font-semibold text-gray-800">Transacciones Diarias</h3>
+                        </div>
+                        <div className="h-[400px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={transactions}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis
+                                        dataKey="date"
+                                        tick={{ fontSize: 12 }}
+                                    />
+                                    <YAxis
+                                        tick={{ fontSize: 12 }}
+                                    />
+                                    <Tooltip />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="total"
+                                        stroke="#3b82f6"
+                                        strokeWidth={2}
+                                        dot={{ r: 4 }}
+                                        activeDot={{ r: 8 }}
+                                        name="Transacciones"
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </Card>
                 </div>
-
-                <Card className="p-6">
-                    <div className="mb-4">
-                        <h3 className="text-lg font-semibold">Transacciones Diarias</h3>
-                    </div>
-                    <div className="h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={transactions}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis
-                                    dataKey="date"
-                                    tick={{ fontSize: 12 }}
-                                />
-                                <YAxis
-                                    tick={{ fontSize: 12 }}
-                                />
-                                <Tooltip />
-                                <Line
-                                    type="monotone"
-                                    dataKey="total"
-                                    stroke="#3b82f6"
-                                    strokeWidth={2}
-                                    dot={{ r: 4 }}
-                                    activeDot={{ r: 8 }}
-                                    name="Transacciones"
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                </Card>
             </div>
-        </div>
+        </main>
     );
 };
-//test
+
 export default Dashboard;
