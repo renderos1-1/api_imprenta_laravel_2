@@ -71,16 +71,17 @@ class TransactionSeeder extends Seeder
 
     public function run(): void
     {
-        $documentTypes = ['dui', 'passport', 'nit'];  // For now just DUI as per requirements
+        // Updated to match ENUM types in migration
+        $documentTypes = ['dui'];  // Restricted to DUI as per requirements
         $personTypes = ['persona_natural', 'persona_juridica'];
-        $statuses = ['completado', 'en_proceso', 'cancelado'];
+        $statuses = ['pendiente', 'completado', 'cancelado'];  // Updated to match ENUM
 
-        // Create 50 dummy transactions
+        // Create 150 dummy transactions
         for ($i = 0; $i < 150; $i++) {
             $startDate = Carbon::now()->subDays(rand(1, 30));
             $endDate = Carbon::parse($startDate)->addHours(rand(1, 48));
 
-            // Get random department and municipalityooo
+            // Get random department and municipality
             $deptKey = array_rand($this->departamentos);
             $muniKey = array_rand($this->departamentos[$deptKey]['municipalities']);
 
@@ -94,49 +95,61 @@ class TransactionSeeder extends Seeder
                 'ccityName' => $this->departamentos[$deptKey]['municipalities'][$muniKey]
             ];
 
-            // Create the base price and calculate derivatives
+            $status = $statuses[array_rand($statuses)];
+            $stages = $this->generateStages($startDate, $endDate);
             $basePrice = rand(100, 500);
-            $iva = $basePrice * 0.13; // 13% IVA in El Salvador
+            $iva = $basePrice * 0.13;
             $discount = rand(0, 50);
             $totalPay = $basePrice + $iva - $discount;
 
-            $stages = $this->generateStages($startDate, $endDate);
-
+            // Create transaction matching new schema
             DB::table('transactions')->insert([
                 'id' => Str::uuid(),
+                'external_id' => rand(1000000, 9999999),  // Unique external ID
+                'proceso_id' => rand(300, 400),
                 'document_type' => $documentTypes[array_rand($documentTypes)],
                 'person_type' => $personTypes[array_rand($personTypes)],
                 'document_number' => sprintf('%08d-%d', rand(10000000, 99999999), rand(0, 9)),
                 'full_name' => $this->generateName(),
                 'email' => "usuario{$i}@ejemplo.com",
                 'phone' => sprintf('7%03d-%04d', rand(0, 999), rand(0, 9999)),
+
+                // New location fields
+                'state_code' => $location['cstateCode'],
+                'state_name' => $location['cstateName'],
+                'city_code' => $location['ccityCode'],
+                'city_name' => $location['ccityName'],
+
                 'full_json' => json_encode([
-                    'tramite' => [
-                        'id' => rand(9000, 9999),
-                        'estado' => $statuses[array_rand($statuses)],
-                        'proceso_id' => rand(300, 400),
-                        'fecha_inicio' => $startDate->format('Y-m-d H:i:s'),
-                        'fecha_modificacion' => $endDate->format('Y-m-d H:i:s'),
-                        'fecha_termino' => $endDate->format('Y-m-d H:i:s'),
-                        'etapas' => $stages,
-                        'datos' => [
-                            ['adjuntar_documento' => "documento_" . rand(1000, 9999) . ".pdf"],
-                            ['departamento_y_municipio' => $location],
-                            ['precio' => $basePrice],
-                            ['iva' => $iva],
-                            ['descuento' => $discount],
-                            ['total_a_pagar' => $totalPay],
-                            ['n_telefono' => sprintf('2%03d-%04d', rand(0, 999), rand(0, 9999))],
-                            ['n_celular' => sprintf('7%03d-%04d', rand(0, 999), rand(0, 9999))],
-                            ['tipo_de_documento' => 'dui'],
-                            ['pago_de_tramite' => 'pago_en_ventanilla']
-                        ]
+                    'id' => rand(9000, 9999),
+                    'estado' => $status,
+                    'proceso_id' => rand(300, 400),
+                    'fecha_inicio' => $startDate->format('Y-m-d H:i:s'),
+                    'fecha_modificacion' => $endDate->format('Y-m-d H:i:s'),
+                    'fecha_termino' => $endDate->format('Y-m-d H:i:s'),
+                    'etapas' => $stages,
+                    'datos' => [
+                        ['adjuntar_documento' => "documento_" . rand(1000, 9999) . ".pdf"],
+                        ['departamento_y_municipio' => $location],
+                        ['precio' => $basePrice],
+                        ['iva' => $iva],
+                        ['descuento' => $discount],
+                        ['total_a_pagar' => $totalPay],
+                        ['dui' => sprintf('%08d-%d', rand(10000000, 99999999), rand(0, 9))],
+                        ['n_telefono' => sprintf('2%03d-%04d', rand(0, 999), rand(0, 9999))],
+                        ['n_celular' => sprintf('7%03d-%04d', rand(0, 999), rand(0, 9999))],
+                        ['tipo_de_documento' => 'dui'],
+                        ['tipo_de_persona' => $personTypes[array_rand($personTypes)]],
+                        ['pago_de_tramite' => 'pago_en_ventanilla']
                     ]
                 ]),
+                'status' => $status,
+                'sync_status' => 'synced',
                 'created_at' => $startDate,
-                'status' => $statuses[array_rand($statuses)],
+                'updated_at' => $endDate,
+                'last_sync_at' => now(),
                 'start_date' => $startDate,
-                'end_date' => $endDate,
+                'end_date' => $endDate
             ]);
         }
     }

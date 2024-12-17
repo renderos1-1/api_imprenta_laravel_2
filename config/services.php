@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+
+    'simple' => [
+        'url' => env('SIMPLE_API_URL', 'https://imprentanacional.ventanilla.simple.sv/backend/api'),
+        'token' => env('SIMPLE_API_TOKEN'),
+    ],
+
 ];
