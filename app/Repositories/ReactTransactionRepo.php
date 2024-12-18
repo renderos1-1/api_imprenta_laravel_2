@@ -48,7 +48,7 @@ class ReactTransactionRepo
             );
 
         if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [
+            $query->whereBetween('start_date', [
                 Carbon::parse($startDate)->startOfDay(),
                 Carbon::parse($endDate)->endOfDay()
             ]);
@@ -70,55 +70,81 @@ class ReactTransactionRepo
     public function getDestinationTypeDistribution($startDate = null, $endDate = null)
     {
         try {
+            // Start building the base query
             $query = DB::table('transactions')
-                ->select(
-                    DB::raw("jsonb_array_elements(full_json->'datos')->>>'destinatario' as destinatario"),
-                    DB::raw('COUNT(*) as total')
-                )
-                ->whereNotNull('full_json');
+                ->crossJoin(DB::raw("
+                LATERAL jsonb_array_elements(
+                    CASE
+                        WHEN jsonb_typeof(full_json->'datos') = 'array'
+                        THEN full_json->'datos'
+                        ELSE '[]'::jsonb
+                    END
+                ) AS value
+            "))
+                ->whereRaw("value->>'destinatario' IS NOT NULL");
 
+            // Add date range filter if provided
             if ($startDate && $endDate) {
-                $query->whereBetween('start_date', [
+                $query->whereBetween('transactions.start_date', [
                     Carbon::parse($startDate)->startOfDay(),
                     Carbon::parse($endDate)->endOfDay()
                 ]);
             }
 
-            $results = $query->groupBy('destinatario')->get();
+            // Get the results with proper naming and calculations
+            $results = $query
+                ->select(
+                    DB::raw("
+                    CASE
+                        WHEN value->>'destinatario' = 'para_mi' THEN 'Trámite Personal'
+                        WHEN value->>'destinatario' = 'para_tercero' THEN 'Trámite para Terceros'
+                        ELSE value->>'destinatario'
+                    END as display_name
+                "),
+                    DB::raw('COUNT(*) as total')
+                )
+                ->groupBy(DB::raw("value->>'destinatario'"))
+                ->get();
 
-            return $results->map(function ($item) {
+            // Calculate total for percentage
+            $total = $results->sum('total');
+
+            // Transform results adding percentage
+            return $results->map(function ($item) use ($total) {
                 return [
-                    'name' => $item->destinatario === 'para_mi' ? 'Trámite Personal' : 'Trámite para Terceros',
-                    'value' => $item->total
+                    'name' => $item->display_name,
+                    'value' => $item->total,
+                    'percentage' => $total > 0
+                        ? round(($item->total * 100.0) / $total, 2)
+                        : 0
                 ];
             });
 
         } catch (\Exception $e) {
-            Log::error('Destination type distribution query failed', [
+            Log::error('Error getting destination type distribution', [
                 'error' => $e->getMessage(),
-                'start_date' => $startDate,
-                'end_date' => $endDate
+                'trace' => $e->getTraceAsString()
             ]);
             throw $e;
         }
     }
 
 
-    public function getGeographicDistribution($startDate = null, $endDate = null)
+    public function getHierarchicalTransactionsByDepartment($startDate = null, $endDate = null)
     {
         try {
-            // First get department level data
+            // First get department totals
             $departmentQuery = DB::table('transactions')
-                ->select(
+                ->select([
                     'state_code',
                     'state_name',
-                    DB::raw('COUNT(*) as value')
-                )
+                    DB::raw('COUNT(*) as total_transactions')
+                ])
                 ->whereNotNull('state_name');
 
-            // Apply date filtering if provided
+            // Apply date filters if provided
             if ($startDate && $endDate) {
-                $departmentQuery->whereBetween('created_at', [
+                $departmentQuery->whereBetween('start_date', [
                     Carbon::parse($startDate)->startOfDay(),
                     Carbon::parse($endDate)->endOfDay()
                 ]);
@@ -128,61 +154,49 @@ class ReactTransactionRepo
                 ->groupBy('state_code', 'state_name')
                 ->get();
 
-            // Get municipality level data
-            $municipalityQuery = DB::table('transactions')
-                ->select(
-                    'state_code',
-                    'state_name',
-                    'city_code',
-                    'city_name',
-                    DB::raw('COUNT(*) as value')
-                )
-                ->whereNotNull('city_name');
-
-            // Apply same date filtering
-            if ($startDate && $endDate) {
-                $municipalityQuery->whereBetween('created_at', [
-                    Carbon::parse($startDate)->startOfDay(),
-                    Carbon::parse($endDate)->endOfDay()
-                ]);
-            }
-
-            $municipalities = $municipalityQuery
-                ->groupBy('state_code', 'state_name', 'city_code', 'city_name')
-                ->get();
-
-            // Structure data hierarchically
-            $data = [];
+            // Now get municipality data for each department
             foreach ($departments as $dept) {
-                $children = $municipalities
-                    ->where('state_code', $dept->state_code)
-                    ->map(function ($muni) {
-                        return [
-                            'name' => $muni->city_name,
-                            'id' => $muni->city_code,
-                            'value' => $muni->value,
-                            'type' => 'municipality'
-                        ];
-                    })
-                    ->values()
-                    ->toArray();
+                $municipalityQuery = DB::table('transactions')
+                    ->select([
+                        'city_code',
+                        'city_name',
+                        DB::raw('COUNT(*) as transactions'),
+                        // Include person_type to split between personal and third party
+                        DB::raw("SUM(CASE WHEN person_type = 'persona_natural' THEN 1 ELSE 0 END) as personal_transactions"),
+                        DB::raw("SUM(CASE WHEN person_type = 'persona_juridica' THEN 1 ELSE 0 END) as third_party_transactions")
+                    ])
+                    ->where('state_code', $dept->state_code);
 
-                $data[] = [
-                    'name' => $dept->state_name,
-                    'id' => $dept->state_code,
-                    'value' => $dept->value,
-                    'type' => 'department',
-                    'children' => $children
-                ];
+                // Apply same date filters
+                if ($startDate && $endDate) {
+                    $municipalityQuery->whereBetween('created_at', [
+                        Carbon::parse($startDate)->startOfDay(),
+                        Carbon::parse($endDate)->endOfDay()
+                    ]);
+                }
+
+                $municipalities = $municipalityQuery
+                    ->groupBy('city_code', 'city_name')
+                    ->get();
+
+                // Add municipalities to department object
+                $dept->municipalities = $municipalities;
+
+                // Add split between personal and third party at department level
+                $dept->personal_transactions = $municipalities->sum('personal_transactions');
+                $dept->third_party_transactions = $municipalities->sum('third_party_transactions');
             }
 
-            return $data;
+            Log::info('Hierarchical department data retrieved', [
+                'department_count' => $departments->count()
+            ]);
+
+            return $departments;
 
         } catch (\Exception $e) {
-            Log::error('Geographic distribution query failed', [
+            Log::error('Error getting hierarchical department data', [
                 'error' => $e->getMessage(),
-                'start_date' => $startDate,
-                'end_date' => $endDate
+                'trace' => $e->getTraceAsString()
             ]);
             throw $e;
         }

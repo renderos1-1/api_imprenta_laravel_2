@@ -150,25 +150,26 @@ class ChartDataController extends Controller
         }
     }
 
-    public function getGeographicData(Request $request)
+    public function getDepartmentsData(Request $request)
     {
         try {
-            Log::info('Geographic data request received', $request->all());
+            $startDate = $request->input('startDate');
+            $endDate = $request->input('endDate');
 
-            $startDate = $request->input('start_date');
-            $endDate = $request->input('end_date');
-
-            $data = $this->transactionRepository->getGeographicDistribution($startDate, $endDate);
+            $data = $this->transactionRepository->getHierarchicalTransactionsByDepartment(
+                $startDate,
+                $endDate
+            );
 
             return response()->json($data);
         } catch (\Exception $e) {
-            Log::error('Error in getGeographicData', [
+            Log::error('Error in getDepartmentsData', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
-                'error' => 'Error retrieving geographic data'
+                'error' => 'Error retrieving department data'
             ], 500);
         }
     }

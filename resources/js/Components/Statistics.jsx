@@ -1,10 +1,10 @@
 import React from 'react';
-import { Card } from '@/components/ui/card';
+import { Card } from './ui/card';
 import RevenueChart from './charts/RevenueChart';
 import PersonTypeChart from './charts/PersonTypeChart';
 import DocumentTypeChart from './charts/DocumentTypeChart';
 import GeographicTreeMap from "./charts/GeographicTreeMap.jsx";
-import { Button } from '@/components/ui/button';
+import { Button } from './ui/button';
 import StatusDistributionChart from "./charts/StatusDistributionChart.jsx";
 import DestinationTypeChart from "./charts/DestinationTypeChart.jsx";
 
@@ -65,7 +65,7 @@ const Statistics = () => {
                             <Card className="shadow-sm">
                                 <div className="p-4 border-b">
                                     <div className="flex justify-between items-center">
-                                        <h2 className="text-lg font-semibold text-gray-700">Chart Title 2</h2>
+                                        <h2 className="text-lg font-semibold text-gray-700">Distribución por destinatario</h2>
 
                                     </div>
                                 </div>

@@ -9,8 +9,8 @@ import {
     Legend,
     ResponsiveContainer
 } from 'recharts';
-import { Card } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card } from '../ui/card';
+import { Alert, AlertDescription } from '../ui/alert';
 
 const StatusDistributionChart = () => {
     const [data, setData] = useState([]);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from 'recharts';
-import { Alert } from "@/components/ui/alert";
+import { Alert } from "../ui/alert";
 import ExportButton from '../ui/ExportButton'; // Updated import
 
 const DocumentTypeChart = () => {
