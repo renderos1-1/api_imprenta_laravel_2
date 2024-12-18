@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Treemap, ResponsiveContainer, Tooltip } from 'recharts';
 import { scaleLinear } from 'd3-scale';
-import { Card } from '@/components/ui/card';
+import { Card } from '../ui/card';
 
 const CustomTooltip = ({ active, payload }) => {
     if (!active || !payload || !payload[0]) return null;
