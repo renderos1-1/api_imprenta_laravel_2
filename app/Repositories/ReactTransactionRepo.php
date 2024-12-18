@@ -9,49 +9,6 @@ use Carbon\Carbon;
 
 class ReactTransactionRepo
 {
-    /**
-     * Get transactions revenue data within a date range
-     */
-    // app/Repositories/ReactTransactionRepo.php
-
-    public function getRevenueData($startDate = null, $endDate = null)
-    {
-        try {
-            $query = DB::table('transactions')
-                ->select(
-                    DB::raw('DATE(created_at) as date'),
-                    DB::raw('COALESCE(SUM(
-                    CASE
-                        WHEN full_json->\'tramite\'->\'datos\' IS NOT NULL
-                        AND jsonb_array_length(full_json->\'tramite\'->\'datos\') >= 6
-                        THEN CAST(full_json#>\'{tramite,datos,5,total_a_pagar}\' AS DECIMAL(10,2))
-                        ELSE 0
-                    END
-                ), 0) as total')
-                )
-                ->where('status', 'completado');
-
-            if ($startDate && $endDate) {
-                $query->whereBetween('created_at', [
-                    Carbon::parse($startDate)->startOfDay(),
-                    Carbon::parse($endDate)->endOfDay()
-                ]);
-            }
-
-            return $query->groupBy('date')
-                ->orderBy('date', 'asc')
-                ->get();
-
-        } catch (\Exception $e) {
-            Log::error('Revenue data query failed', [
-                'error' => $e->getMessage(),
-                'start_date' => $startDate,
-                'end_date' => $endDate
-            ]);
-            throw $e;
-        }
-    }
-
 
 
     /**
@@ -110,93 +67,172 @@ class ReactTransactionRepo
             });
     }
 
-    public function getTransactionsByDepartment($startDate = null, $endDate = null)
+    public function getDestinationTypeDistribution($startDate = null, $endDate = null)
     {
-        $query = DB::table('transactions')
-            ->selectRaw("
-            datos.value->'departamento_y_municipio'->>'cstateName' as department,
-            COUNT(*) as total
-        ")
-            ->fromRaw("
-            transactions,
-            jsonb_array_elements(full_json->'tramite'->'datos') as datos
-        ")
-            ->whereRaw("datos.value->>'departamento_y_municipio' IS NOT NULL");
+        try {
+            $query = DB::table('transactions')
+                ->select(
+                    DB::raw("jsonb_array_elements(full_json->'datos')->>>'destinatario' as destinatario"),
+                    DB::raw('COUNT(*) as total')
+                )
+                ->whereNotNull('full_json');
 
-        if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [
-                Carbon::parse($startDate)->startOfDay(),
-                Carbon::parse($endDate)->endOfDay()
-            ]);
-        }
+            if ($startDate && $endDate) {
+                $query->whereBetween('start_date', [
+                    Carbon::parse($startDate)->startOfDay(),
+                    Carbon::parse($endDate)->endOfDay()
+                ]);
+            }
 
-        // Add debug logging
-        \Log::info('Department query:', ['sql' => $query->toSql()]);
+            $results = $query->groupBy('destinatario')->get();
 
-        return $query->groupBy('department')
-            ->orderByDesc('total')
-            ->get()
-            ->map(function ($item) {
+            return $results->map(function ($item) {
                 return [
-                    'name' => $item->department ?? 'No Departamento',
-                    'total' => $item->total
+                    'name' => $item->destinatario === 'para_mi' ? 'Trámite Personal' : 'Trámite para Terceros',
+                    'value' => $item->total
                 ];
             });
+
+        } catch (\Exception $e) {
+            Log::error('Destination type distribution query failed', [
+                'error' => $e->getMessage(),
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+            throw $e;
+        }
     }
 
-    public function getAverageStageDuration($startDate = null, $endDate = null)
+
+    public function getGeographicDistribution($startDate = null, $endDate = null)
     {
-        // Define the correct order of stages
-        $stageOrder = [
-            'Solicitud' => 1,
-            'Revisión de documentos' => 2,
-            'Subsanar Observaciones' => 3,
-            'Revisar observaciones' => 4,
-            'Cotización' => 5,
-            'Ciudadano revisa cotización' => 6,
-            'Adjuntar mandamiento de pago' => 7,
-            'Revisión de pago' => 8,
-            'Notificación de publicación (resolutor)' => 9
-        ];
+        try {
+            // First get department level data
+            $departmentQuery = DB::table('transactions')
+                ->select(
+                    'state_code',
+                    'state_name',
+                    DB::raw('COUNT(*) as value')
+                )
+                ->whereNotNull('state_name');
 
-        $query = DB::table('transactions')
-            ->selectRaw("
-            etapas.value->'tarea'->>'nombre' as stage_name,
-            AVG(
-                EXTRACT(EPOCH FROM
-                    (etapas.value->>'fecha_termino')::timestamp -
-                    (etapas.value->>'fecha_inicio')::timestamp
-                )/60
-            ) as average_duration_minutes
-        ")
-            ->fromRaw("
-            transactions,
-            jsonb_array_elements(full_json->'tramite'->'etapas') as etapas
-        ")
-            ->whereRaw("etapas.value->>'estado' = 'completado'");
+            // Apply date filtering if provided
+            if ($startDate && $endDate) {
+                $departmentQuery->whereBetween('created_at', [
+                    Carbon::parse($startDate)->startOfDay(),
+                    Carbon::parse($endDate)->endOfDay()
+                ]);
+            }
 
-        if ($startDate && $endDate) {
-            $query->whereBetween('created_at', [
-                Carbon::parse($startDate)->startOfDay(),
-                Carbon::parse($endDate)->endOfDay()
-            ]);
-        }
+            $departments = $departmentQuery
+                ->groupBy('state_code', 'state_name')
+                ->get();
 
-        $result = $query->groupBy('stage_name')
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'name' => $item->stage_name,
-                    'duration' => round($item->average_duration_minutes, 2)
+            // Get municipality level data
+            $municipalityQuery = DB::table('transactions')
+                ->select(
+                    'state_code',
+                    'state_name',
+                    'city_code',
+                    'city_name',
+                    DB::raw('COUNT(*) as value')
+                )
+                ->whereNotNull('city_name');
+
+            // Apply same date filtering
+            if ($startDate && $endDate) {
+                $municipalityQuery->whereBetween('created_at', [
+                    Carbon::parse($startDate)->startOfDay(),
+                    Carbon::parse($endDate)->endOfDay()
+                ]);
+            }
+
+            $municipalities = $municipalityQuery
+                ->groupBy('state_code', 'state_name', 'city_code', 'city_name')
+                ->get();
+
+            // Structure data hierarchically
+            $data = [];
+            foreach ($departments as $dept) {
+                $children = $municipalities
+                    ->where('state_code', $dept->state_code)
+                    ->map(function ($muni) {
+                        return [
+                            'name' => $muni->city_name,
+                            'id' => $muni->city_code,
+                            'value' => $muni->value,
+                            'type' => 'municipality'
+                        ];
+                    })
+                    ->values()
+                    ->toArray();
+
+                $data[] = [
+                    'name' => $dept->state_name,
+                    'id' => $dept->state_code,
+                    'value' => $dept->value,
+                    'type' => 'department',
+                    'children' => $children
                 ];
-            });
+            }
 
-        // Sort the results according to the defined order
-        return $result->sort(function ($a, $b) use ($stageOrder) {
-            $orderA = $stageOrder[$a['name']] ?? 999;
-            $orderB = $stageOrder[$b['name']] ?? 999;
-            return $orderA - $orderB;
-        })->values();
+            return $data;
+
+        } catch (\Exception $e) {
+            Log::error('Geographic distribution query failed', [
+                'error' => $e->getMessage(),
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+            throw $e;
+        }
+    }
+
+    public function getTransactionStatusDistribution($startDate = null, $endDate = null)
+    {
+        try {
+            $query = DB::table('transactions')
+                ->select(
+                    DB::raw('DATE(start_date) as date'), // Changed from created_at to start_date
+                    'status',
+                    DB::raw('COUNT(*) as count')
+                );
+
+            if ($startDate && $endDate) {
+                $query->whereBetween('start_date', [ // Changed from created_at to start_date
+                    Carbon::parse($startDate)->startOfDay(),
+                    Carbon::parse($endDate)->endOfDay()
+                ]);
+            }
+
+            $results = $query->groupBy('date', 'status')
+                ->orderBy('date', 'asc')
+                ->get();
+
+            // Restructure data for the chart
+            $dateGroups = $results->groupBy('date');
+
+            return $dateGroups->map(function ($group) {
+                $date = $group[0]->date;
+                $pendingCount = $group->firstWhere('status', 'pendiente')?->count ?? 0;
+                $completedCount = $group->firstWhere('status', 'completado')?->count ?? 0;
+
+                return [
+                    'date' => $date,
+                    'Pendientes' => $pendingCount,
+                    'Completados' => $completedCount,
+                    'Total' => $pendingCount + $completedCount
+                ];
+            })->values();
+
+        } catch (\Exception $e) {
+            Log::error('Transaction status distribution query failed', [
+                'error' => $e->getMessage(),
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+            throw $e;
+        }
     }
 
     public function getDetailedPersonTypeData($startDate = null, $endDate = null)
@@ -264,7 +300,7 @@ class ReactTransactionRepo
             $query = DB::table('transactions');
 
             if ($period === 'today') {
-                $query->whereDate('created_at', today());
+                $query->whereDate('start_date', today());
             }
 
             return $query->count();
@@ -285,7 +321,7 @@ class ReactTransactionRepo
         try {
             $today = $this->getTransactionsCount('today');
             $yesterday = DB::table('transactions')
-                ->whereDate('created_at', today()->subDay())
+                ->whereDate('start_date', today()->subDay())
                 ->count();
 
             if ($yesterday === 0) return 0;
@@ -381,12 +417,12 @@ class ReactTransactionRepo
         try {
             $query = DB::table('transactions')
                 ->select(
-                    DB::raw('DATE(created_at) as date'),
+                    DB::raw('DATE(start_date) as date'),
                     DB::raw('COUNT(*) as total')
                 );
 
             if ($startDate && $endDate) {
-                $query->whereBetween('created_at', [
+                $query->whereBetween('start_date', [
                     Carbon::parse($startDate)->startOfDay(),
                     Carbon::parse($endDate)->endOfDay()
                 ]);

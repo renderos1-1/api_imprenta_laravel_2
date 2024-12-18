@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('/chart-data/revenue', [ChartDataController::class, 'getRevenueData']);
 Route::post('/chart-data/person-type', [ChartDataController::class, 'getPersonTypeData']);
 Route::post('/chart-data/document-type', [ChartDataController::class, 'getDocumentTypeData']);
-Route::post('/chart-data/department', [ChartDataController::class, 'getDepartmentData']);
-Route::post('/chart-data/stage-duration', [ChartDataController::class, 'getStageDurationData']);
+Route::post('/chart-data/geographic', [ChartDataController::class, 'getGeographicData']);
+Route::post('/chart-data/status-distribution', [ChartDataController::class, 'getStatusDistributionData']);
+Route::post('/chart-data/destination-type', [ChartDataController::class, 'getDestinationTypeData']);
+
 
 //Dashboard routes
 Route::get('/dashboard/stats', [ReactDashboardController::class, 'getStats']);

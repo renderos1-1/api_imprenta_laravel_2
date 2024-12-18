@@ -3,9 +3,10 @@ import { Card } from '@/components/ui/card';
 import RevenueChart from './charts/RevenueChart';
 import PersonTypeChart from './charts/PersonTypeChart';
 import DocumentTypeChart from './charts/DocumentTypeChart';
-import DepartmentsChart from './charts/DepartmentsChart';
+import GeographicTreeMap from "./charts/GeographicTreeMap.jsx";
 import { Button } from '@/components/ui/button';
-import StageDurationChart from "./charts/StageDurationChart.jsx";
+import StatusDistributionChart from "./charts/StatusDistributionChart.jsx";
+import DestinationTypeChart from "./charts/DestinationTypeChart.jsx";
 
 const Statistics = () => {
     return (
@@ -69,7 +70,7 @@ const Statistics = () => {
                                     </div>
                                 </div>
                                 <div className="p-4 h-[300px]">
-                                    {/* Future chart */}
+                                    <DestinationTypeChart/>
                                 </div>
                             </Card>
                         </div>
@@ -82,8 +83,8 @@ const Statistics = () => {
 
                                 </div>
                             </div>
-                            <div className="p-4 h-[500px]">
-                                <DepartmentsChart />
+                            <div className="p-4 h-[1000px]">
+                                <GeographicTreeMap />
                             </div>
                         </Card>
 
@@ -97,7 +98,7 @@ const Statistics = () => {
                             </div>
                             <div className="p-4 overflow-x-auto">
                                 <div className="min-w-[800px] h-[600px]">
-                                    <StageDurationChart />
+                                    <StatusDistributionChart />
                                 </div>
                             </div>
                         </Card>

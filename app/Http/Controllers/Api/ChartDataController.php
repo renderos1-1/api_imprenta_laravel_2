@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class ChartDataController extends Controller
 {
-    protected $transactionRepository;
+    protected ReactTransactionRepo $transactionRepository;
 
     public function __construct(ReactTransactionRepo $transactionRepository)
     {
@@ -66,6 +66,29 @@ class ChartDataController extends Controller
                 'error' => 'Error retrieving revenue data',
                 'message' => config('app.debug') ? $e->getMessage() : 'Internal server error',
                 'trace' => config('app.debug') ? $e->getTraceAsString() : null
+            ], 500);
+        }
+    }
+
+    public function getDestinationTypeData(Request $request)
+    {
+        try {
+            Log::info('Destination type data request received', $request->all());
+
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+
+            $data = $this->transactionRepository->getDestinationTypeDistribution($startDate, $endDate);
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+            Log::error('Error in getDestinationTypeData', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'error' => 'Error retrieving destination type data'
             ], 500);
         }
     }
@@ -127,44 +150,48 @@ class ChartDataController extends Controller
         }
     }
 
-    public function getDepartmentData(Request $request)
+    public function getGeographicData(Request $request)
     {
         try {
+            Log::info('Geographic data request received', $request->all());
+
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
 
-            $data = $this->transactionRepository->getTransactionsByDepartment($startDate, $endDate);
+            $data = $this->transactionRepository->getGeographicDistribution($startDate, $endDate);
 
             return response()->json($data);
         } catch (\Exception $e) {
-            Log::error('Error in getDepartmentData', [
+            Log::error('Error in getGeographicData', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
-                'error' => 'Error retrieving department data'
+                'error' => 'Error retrieving geographic data'
             ], 500);
         }
     }
 
-    public function getStageDurationData(Request $request)
+    public function getStatusDistributionData(Request $request)
     {
         try {
+            Log::info('Status distribution data request received', $request->all());
+
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
 
-            $data = $this->transactionRepository->getAverageStageDuration($startDate, $endDate);
+            $data = $this->transactionRepository->getTransactionStatusDistribution($startDate, $endDate);
 
             return response()->json($data);
         } catch (\Exception $e) {
-            Log::error('Error in getStageDurationData', [
+            Log::error('Error in getStatusDistributionData', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
-                'error' => 'Error retrieving stage duration data'
+                'error' => 'Error retrieving status distribution data'
             ], 500);
         }
     }

@@ -180,7 +180,7 @@ class TransactionImportService
             $documentNumber = $this->getDocumentNumber($datos, $documentType);
 
             // Ensure we have a valid JSON string for full_json
-            $fullJson = json_encode($data) ?: '{}';
+            $fullJson = $data;
 
             // Create base transaction data
             $transformedData = [
@@ -203,7 +203,7 @@ class TransactionImportService
                 'city_code' => $locationData['city_code'],
                 'city_name' => $locationData['city_name'],
 
-                'full_json' => $fullJson,
+                'full_json' => $data,
                 'status' => $this->validateStatus($data['estado'] ?? 'pendiente'),
                 'start_date' => isset($data['fecha_inicio'])
                     ? Carbon::parse($data['fecha_inicio'])
