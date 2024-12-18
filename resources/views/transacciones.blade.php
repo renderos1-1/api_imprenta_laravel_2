@@ -36,10 +36,22 @@
                            placeholder="Buscar por Nombre"
                            value="{{ request('search_name') }}">
 
+                    <input type="text"
+                           name="search_email"
+                           id="searchEmail"
+                           placeholder="Buscar por correo"
+                           value="{{ request('search_email') }}">
+
+                    <input type="text"
+                           name="search_phone"
+                           id="searchPhne"
+                           placeholder="Buscar por número telefónico"
+                           value="{{ request('search_phone') }}">
+
                     <button type="submit" class="search-button">Buscar</button>
 
                     {{-- Botón para limpiar búsqueda --}}
-                    @if(request('search_dui') || request('search_name'))
+                    @if(request('search_dui') || request('search_name') || request('search_email') || request('search_phone'))
                         <a href="{{ route('transacciones') }}" class="btn btn-secondary">Limpiar búsqueda</a>
                     @endif
                 </div>
@@ -47,7 +59,7 @@
         </div>
 
         {{-- Contador de resultados para búsquedas --}}
-        @if(request('search_dui') || request('search_name'))
+        @if(request('search_dui') || request('search_name') || request('search_email') || request('search_phone'))
             <div class="results-info">
                 <p>Resultados encontrados: {{ $transactions->count() }}</p>
             </div>
@@ -57,6 +69,7 @@
             <table>
                 <thead>
                 <tr>
+                    <th>ID de trámite</th>
                     <th>Nombre Completo</th>
                     <th>DUI</th>
                     <th>Tipo de Persona</th>
@@ -69,6 +82,7 @@
                 <tbody id="dataTable">
                 @forelse($transactions as $transaction)
                     <tr>
+                        <td>{{ $transaction->external_id }}</td>
                         <td>{{ $transaction->full_name }}</td>
                         <td>{{ $transaction->document_number }}</td>
                         <td>{{ $transaction->person_type === 'persona_natural' ? 'Natural' : 'Jurídica' }}</td>
@@ -79,7 +93,7 @@
                                 {{ ucfirst($transaction->status) }}
                             </span>
                         </td>
-                        <td>{{ $transaction->created_at->format('d/m/Y H:i') }}</td>
+                        <td>{{ $transaction->start_date->format('d/m/Y H:i') }}</td>
                     </tr>
                 @empty
                     <tr>
