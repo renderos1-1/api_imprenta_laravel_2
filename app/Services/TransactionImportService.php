@@ -2,14 +2,18 @@
 
 namespace App\Services;
 
+use App\Services\DocumentService;
+use App\Models\Document;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class TransactionImportService
 {
+    private DocumentService $documentService;
     private string $baseUrl;
     private string $token;
     private ?string $pageToken = null;
@@ -17,66 +21,73 @@ class TransactionImportService
     private int $retryAttempts = 0;
     private int $maxRetryAttempts = 3;
 
-    public function __construct()
+    public function __construct(DocumentService $documentService)
     {
         $this->baseUrl = config('services.simple.url');
         $this->token = config('services.simple.token');
+        $this->documentService = $documentService;
     }
 
     public function importHistoricalData()
     {
-        do {
-            try {
-                $response = $this->fetchBatch();
+        $jobId = $this->trackJob();
+        $recordsProcessed = 0;
 
-                if (!$response->successful()) {
-                    Log::error('Failed to fetch transactions', [
-                        'status' => $response->status(),
-                        'body' => $response->json()
+        try {
+            do {
+                try {
+                    $response = $this->fetchBatch();
+
+                    if (!$response->successful()) {
+                        Log::error('Failed to fetch transactions', [
+                            'status' => $response->status(),
+                            'body' => $response->json()
+                        ]);
+
+                        $this->retryAttempts = 0;
+                        continue;
+                    }
+
+                    $data = $response->json();
+                    $this->processBatch($data['tramites']['items']);
+                    $recordsProcessed += count($data['tramites']['items']);
+
+                    $this->pageToken = $data['tramites']['nextPageToken'] ?? null;
+                    $this->retryAttempts = 0;
+
+                    if ($this->pageToken !== null) {
+                        sleep(1);
+                    }
+
+                    Log::info('Batch processed', [
+                        'count' => count($data['tramites']['items']),
+                        'total_processed' => $recordsProcessed,
+                        'hasMorePages' => !is_null($this->pageToken)
                     ]);
 
-                    // Reset retry counter on success
-                    $this->retryAttempts = 0;
-                    continue;
+                } catch (\Exception $e) {
+                    Log::error('Error processing batch', [
+                        'error' => $e->getMessage(),
+                        'pageToken' => $this->pageToken,
+                        'attempt' => $this->retryAttempts + 1
+                    ]);
+
+                    if ($this->shouldRetry($e)) {
+                        $delay = $this->getRetryDelay();
+                        sleep($delay);
+                        continue;
+                    }
+
+                    throw $e;
                 }
+            } while ($this->pageToken !== null);
 
-                $data = $response->json();
-                $this->processBatch($data['tramites']['items']);
+            $this->completeJob($jobId, $recordsProcessed);
 
-                // Update page token for next batch
-                $this->pageToken = $data['tramites']['nextPageToken'] ?? null;
-
-                // Reset retry counter on success
-                $this->retryAttempts = 0;
-
-                // Add delay between requests to avoid rate limiting
-                if ($this->pageToken !== null) {
-                    sleep(1); // 1 second delay between requests
-                }
-
-                // Log progress
-                Log::info('Batch processed', [
-                    'count' => count($data['tramites']['items']),
-                    'hasMorePages' => !is_null($this->pageToken)
-                ]);
-
-            } catch (\Exception $e) {
-                Log::error('Error processing batch', [
-                    'error' => $e->getMessage(),
-                    'pageToken' => $this->pageToken,
-                    'attempt' => $this->retryAttempts + 1
-                ]);
-
-                if ($this->shouldRetry($e)) {
-                    // Add exponential backoff delay
-                    $delay = $this->getRetryDelay();
-                    sleep($delay);
-                    continue;
-                }
-
-                throw $e;
-            }
-        } while ($this->pageToken !== null);
+        } catch (\Exception $e) {
+            $this->failJob($jobId, $e->getMessage());
+            throw $e;
+        }
     }
 
     private function fetchBatch()
@@ -139,6 +150,13 @@ class TransactionImportService
                 'state_name' => $transaction->state_name,
                 'city_code' => $transaction->city_code,
                 'city_name' => $transaction->city_name
+            ]);
+
+            // Extract and process documents
+            $documents = $this->documentService->extractDocumentsFromTransaction($transaction);
+            Log::info('Documents extracted from transaction', [
+                'external_id' => $data['id'],
+                'document_count' => count($documents)
             ]);
 
             return $transaction;
@@ -453,6 +471,37 @@ class TransactionImportService
     private function getValue($datos, string $key) {
         $item = $datos->first(fn($item) => isset($item[$key]));
         return $item[$key] ?? null;
+    }
+
+    private function trackJob()
+    {
+        return DB::table('import_jobs')->insertGetId([
+            'started_at' => now(),
+            'status' => 'running',
+            'records_processed' => 0
+        ]);
+    }
+
+    private function completeJob($jobId, $recordsProcessed)
+    {
+        DB::table('import_jobs')
+            ->where('id', $jobId)
+            ->update([
+                'finished_at' => now(),
+                'status' => 'completed',
+                'records_processed' => $recordsProcessed
+            ]);
+    }
+
+    private function failJob($jobId, $error)
+    {
+        DB::table('import_jobs')
+            ->where('id', $jobId)
+            ->update([
+                'finished_at' => now(),
+                'status' => 'failed',
+                'error_message' => $error
+            ]);
     }
 
 }

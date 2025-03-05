@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Document;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -83,4 +84,10 @@ class Transaction extends Model
     {
         return 'id';
     }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+
 }

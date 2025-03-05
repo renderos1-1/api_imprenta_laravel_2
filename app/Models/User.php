@@ -3,39 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasUuids, Notifiable;
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * The "type" of the primary key ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'dui',
         'full_name',
+        'dui',
         'password',
         'role_id',
-        'is_active'
+        'is_active',
+        'last_login',      // Add this line
     ];
 
     /**
@@ -54,39 +37,9 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'last_login' => 'datetime',  // Add this if you want automatic date casting
         'is_active' => 'boolean',
-        'last_login' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
-    /**
-     * Get the login identifier for the user.
-     *
-     * @return string
-     */
-    public function getAuthIdentifierName(): string
-    {
-        return 'dui';  // Use DUI instead of email for authentication
-    }
-
-    /**
-     * Get the role associated with the user.
-     */
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
-    /**
-     * Custom validation rules for DUI
-     */
-    public static function rules()
-    {
-        return [
-            'dui' => ['required', 'string', 'regex:/^[0-9]{8}-[0-9]$/', 'unique:users'],
-            'full_name' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'string', 'min:8'],
-            'role_id' => ['required', 'exists:roles,id'],
-        ];
-    }
+    // ... rest of your model code ...
 }

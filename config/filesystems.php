@@ -57,6 +57,15 @@ return [
             'throw' => false,
         ],
 
+        'nas' => [
+            'driver' => 'smb',
+            'host' => env('NAS_HOST', '192.168.101.112'),
+            'username' => env('NAS_USERNAME', 'infonas'),
+            'password' => env('NAS_PASSWORD', 'Imprenta01$-'),
+            'port' => env('NAS_PORT', 445),
+            'root' => env('NAS_ROOT', '/shared-folder-name'),
+        ],
+
     ],
 
     /*

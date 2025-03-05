@@ -1,75 +1,109 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Role;
-use App\Models\BladePermission;
+use App\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
+    /**
+     * Display a listing of roles.
+     */
     public function index()
     {
-        $roles = Role::with('permissions')->get();
+        $roles = Role::with('permissions')
+            ->withCount('users')
+            ->get();
+
         return response()->json($roles);
     }
 
+    /**
+     * Store a newly created role.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:roles',
-            'description' => 'nullable|string',
-            'permissions' => 'required|array|min:1',
-            'permissions.*' => 'exists:blade_permissions,id'
+            'name' => ['required', 'string', 'max:255', 'unique:roles'],
+            'description' => ['nullable', 'string', 'max:255'],
+            'permissions' => ['required', 'array'],
+            'permissions.*' => ['exists:permissions,id']
         ]);
 
-        $role = Role::create([
-            'name' => $validated['name'],
-            'description' => $validated['description']
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $role->permissions()->attach($validated['permissions']);
+            $role = Role::create([
+                'name' => $validated['name'],
+                'description' => $validated['description']
+            ]);
 
-        return response()->json([
-            'message' => 'Rol creado exitosamente',
-            'role' => $role
-        ]);
+            $role->permissions()->sync($validated['permissions']);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Role created successfully',
+                'role' => $role->load('permissions')
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
+    /**
+     * Update the specified role.
+     */
     public function update(Request $request, Role $role)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
-            'description' => 'nullable|string',
-            'permissions' => 'required|array|min:1',
-            'permissions.*' => 'exists:blade_permissions,id'
+            'name' => ['sometimes', 'string', 'max:255', 'unique:roles,name,' . $role->id],
+            'description' => ['nullable', 'string', 'max:255'],
+            'permissions' => ['sometimes', 'array'],
+            'permissions.*' => ['exists:permissions,id']
         ]);
 
-        $role->update([
-            'name' => $validated['name'],
-            'description' => $validated['description']
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $role->permissions()->sync($validated['permissions']);
+            $role->update([
+                'name' => $validated['name'] ?? $role->name,
+                'description' => $validated['description'] ?? $role->description
+            ]);
 
-        return response()->json([
-            'message' => 'Rol actualizado exitosamente',
-            'role' => $role
-        ]);
+            if (isset($validated['permissions'])) {
+                $role->permissions()->sync($validated['permissions']);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Role updated successfully',
+                'role' => $role->load('permissions')
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
-    public function destroy(Role $role)
+    /**
+     * Get all available permissions.
+     */
+    public function permissions()
     {
-        if ($role->users()->exists()) {
-            return response()->json([
-                'message' => 'No se puede eliminar el rol porque tiene usuarios asignados'
-            ], 422);
-        }
+        $permissions = Permission::orderBy('group')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('group');
 
-        $role->delete();
-
-        return response()->json([
-            'message' => 'Rol eliminado exitosamente'
-        ]);
+        return response()->json($permissions);
     }
 }

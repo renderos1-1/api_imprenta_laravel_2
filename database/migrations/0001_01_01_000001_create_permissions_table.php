@@ -10,12 +10,17 @@ return new class extends Migration
     {
         Schema::create('permissions', function (Blueprint $table) {
             // Basic fields
-            $table->id();  // Creates auto-incrementing integer
-            $table->string('name')->unique();  // Permission name must be unique
+            $table->id();
+            $table->string('name')->unique();
+            $table->string('display_name');  // Added this column
             $table->string('description')->nullable();
+            $table->string('group')->nullable();  // Added this column
 
             // Audit timestamps
-            $table->timestamps();  // Adds created_at and updated_at
+            $table->timestamps();
+
+            // Index
+            $table->index('name');
         });
     }
 

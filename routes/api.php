@@ -1,9 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\Api\ChartDataController;
 use App\Http\Controllers\ReactDashboardController;
-use App\Http\Controllers\RoleController;
 use App\Services\PdfExportService;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +27,17 @@ Route::post('/export/{type}', [ExportController::class, 'export'])
     ->name('export.chart')
     ->where('type', 'revenue|person-type|document-type|department|stage-duration|stage-duration');
 
+//PERMISSIONS
+Route::middleware(['auth:sanctum'])->group(function () {
+    // User management routes - require 'manage-users' permission
+    Route::middleware(['permission:manage-users'])->group(function () {
+        Route::apiResource('users', UserController::class);
+        Route::get('roles-list', [UserController::class, 'roles']);
+    });
+
+    // Role management routes - require 'manage-roles' permission
+    Route::middleware(['permission:manage-roles'])->group(function () {
+        Route::apiResource('roles', RoleController::class);
+        Route::get('permissions-list', [RoleController::class, 'permissions']);
+    });
+});

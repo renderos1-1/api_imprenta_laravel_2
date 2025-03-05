@@ -36,10 +36,7 @@ Route::middleware(['auth'])->group(function () {
             ->name('estadisticas');
     });
 
-    // Estadisticas 2 route
-    Route::get('/estadisticas2', function () {
-        return view('estadisticas2', ['headerWord' => 'Estadísticas 2']);
-    })->name('estadisticas2');
+
 
     // User management routes
     Route::prefix('users')->group(function () {

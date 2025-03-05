@@ -3,6 +3,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Statistics from './Components/Statistics';
 import Dashboard from './Components/Dashboard';
+import UserManagement from './Components/UserManagement/UserManagement';
 
 const container = document.getElementById('app');
 if (container) {
@@ -26,3 +27,5 @@ if (dashContainer) {
 } else {
     console.log('Dashboard container not found');
 }
+
+window.UserManagement = UserManagement;

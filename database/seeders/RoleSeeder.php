@@ -4,25 +4,26 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class RoleSeeder extends Seeder
 {
     public function run(): void
     {
+        $now = Carbon::now();
+
         DB::table('roles')->insert([
             [
-                'id' => 1,
-                'name' => 'Admin',
-                'description' => 'System Administrator',
-                'created_at' => now(),
-                'updated_at' => now()
+                'name' => 'Administrator',
+                'description' => 'Full system access',
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
-                'id' => 2,
                 'name' => 'User',
-                'description' => 'Regular User',
-                'created_at' => now(),
-                'updated_at' => now()
+                'description' => 'Regular user access',
+                'created_at' => $now,
+                'updated_at' => $now,
             ]
         ]);
     }

@@ -1,101 +1,104 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\BladePermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
     /**
-     * Display a listing of the users.
+     * Display a listing of users.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('role')->get(); // Load all users with their roles
-        $roles = Role::all(); // Get all roles
-        $bladePermissions = BladePermission::all();
+        $users = User::with('role')
+            ->when($request->search, function($query, $search) {
+                return $query->where('full_name', 'ilike', "%{$search}%")
+                    ->orWhere('dui', 'ilike', "%{$search}%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
-        return view('adminuser', [
-            'users' => User::with('role')->get(),
-            'roles' => Role::all(),
-            'bladePermissions' => BladePermission::all()
-        ]);
+        return response()->json($users);
     }
 
     /**
-     * Store a newly created user in storage.
+     * Store a newly created user.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'dui' => [
-                'required',
-                'string',
-                'regex:/^[0-9]{8}-[0-9]$/',
-                'unique:users,dui'
-            ],
-            'password' => 'required|string|min:6',
-            'role_id' => 'required|exists:roles,id',
-            'is_active' => 'boolean'
+            'dui' => ['required', 'string', 'regex:/^[0-9]{8}-[0-9]$/', 'unique:users'],
+            'full_name' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'string', 'min:8'],
+            'role_id' => ['required', 'exists:roles,id'],
+            'is_active' => ['boolean'],
         ]);
 
         $user = User::create([
-            'full_name' => $validated['full_name'],
             'dui' => $validated['dui'],
+            'full_name' => $validated['full_name'],
             'password' => Hash::make($validated['password']),
             'role_id' => $validated['role_id'],
             'is_active' => $validated['is_active'] ?? true,
-            'created_by' => auth()->id()
         ]);
 
-        return response()->json(['message' => 'Usuario creado exitosamente', 'user' => $user]);
+        return response()->json([
+            'message' => 'User created successfully',
+            'user' => $user->load('role')
+        ], 201);
     }
 
     /**
-     * Update the specified user in storage.
+     * Update the specified user.
      */
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'dui' => [
-                'required',
-                'string',
-                'regex:/^[0-9]{8}-[0-9]$/',
-                Rule::unique('users')->ignore($user->id)
-            ],
-            'role_id' => 'required|exists:roles,id',
-            'is_active' => 'boolean'
+            'full_name' => ['sometimes', 'string', 'max:255'],
+            'password' => ['sometimes', 'string', 'min:8'],
+            'role_id' => ['sometimes', 'exists:roles,id'],
+            'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        if ($request->filled('password')) {
-            $validated['password'] = Hash::make($request->password);
+        if (isset($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
         }
 
         $user->update($validated);
 
-        return response()->json(['message' => 'Usuario actualizado exitosamente', 'user' => $user]);
+        return response()->json([
+            'message' => 'User updated successfully',
+            'user' => $user->load('role')
+        ]);
     }
 
     /**
-     * Remove the specified user from storage.
+     * Remove the specified user.
      */
     public function destroy(User $user)
     {
-        if ($user->id === auth()->id()) {
-            return response()->json(['message' => 'No puedes eliminar tu propio usuario'], 403);
-        }
-
         $user->delete();
 
-        return response()->json(['message' => 'Usuario eliminado exitosamente']);
+        return response()->json([
+            'message' => 'User deleted successfully'
+        ]);
     }
 
+    /**
+     * Get all available roles.
+     */
+    public function roles()
+    {
+        $roles = Role::withCount('users')
+            ->orderBy('name')
+            ->get();
 
+        return response()->json($roles);
+    }
 }
