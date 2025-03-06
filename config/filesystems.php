@@ -63,7 +63,7 @@ return [
             'username' => env('NAS_USERNAME', 'infonas'),
             'password' => env('NAS_PASSWORD', 'Imprenta01$-'),
             'port' => env('NAS_PORT', 445),
-            'root' => env('NAS_ROOT', '/shared-folder-name'),
+            'root' => env('NAS_ROOT', '/simplesv_docs'),
         ],
 
     ],
