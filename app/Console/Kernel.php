@@ -21,15 +21,12 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      */
-    protected function schedule(Schedule $schedule): void
+    protected function schedule(Schedule $schedule)
     {
-        // Schedule your commands here
-
-        // Run document extraction daily at 1 AM
-        $schedule->command('documents:extract')->dailyAt('01:00');
-
-        // Run document sync hourly
-        $schedule->command('documents:sync')->hourly();
+        // Run every day at 1 AM
+        $schedule->command('sync:all --storage=nas --reset-errors')
+            ->dailyAt('01:00')
+            ->appendOutputTo(storage_path('logs/sync-all.log'));
     }
 
     /**

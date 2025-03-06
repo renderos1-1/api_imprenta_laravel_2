@@ -10,7 +10,7 @@ class DocumentsSync extends Command
 {
     protected $signature = 'documents:sync
                             {--storage=nas : Storage disk to use}
-                            {--limit=100 : Maximum number of documents to process}
+                            {--limit=1000 : Maximum number of documents to process}
                             {--force : Force processing of all documents, even already downloaded ones}';
 
     protected $description = 'Synchronize documents from the Simple API to local storage';
